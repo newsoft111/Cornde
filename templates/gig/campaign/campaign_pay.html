@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+{% load campaign_filter %}
+
+<section class="py-5 py-lg-8 border-bottom border-gray-100">
+	<div class="container">
+			<div class="text-center">
+					<h1 class="m-0">캠페인 결제하기</h1>
+			</div>
+	</div>
+</section>
+
+<section class="section">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-6">
+				<div class="product-card mb-4">
+					<h6 class="ps-3 py-2">미리보기</h6>
+					<div class="product-card-img-box">
+							<a href="#">
+								<img class="product-card-img" src="{{before_pay_campaign.thumbnail.url}}" title="" alt="">
+							</a>
+					</div>
+					<div class="product-card-body">
+							<div class="product-title mb-3">
+							{% for channelList in before_pay_campaign.channel|make_list %}
+								{% if channelList == '네이버블로그' %}
+								<span class="badge bg-naver">{{channelList}}</span>
+								{% elif channelList == '인스타그램' %}
+								<span class="badge bg-insta">{{channelList}}</span>
+								{% elif channelList == '유튜브' %}
+								<span class="badge bg-youtube">{{channelList}}</span>
+								{% elif channelList == '카페' %}
+								<span class="badge bg-cafe">{{channelList}}</span>
+								{% elif channelList == '네이버포스트' %}
+								<span class="badge bg-post">{{channelList}}</span>
+								{% else %}
+								<span class="badge bg-primary">{{channelList}}</span>
+								{% endif %}
+							{% endfor %}
+								<span class="badge bg-light text-muted">{{before_pay_campaign.campaign_type}}</span>
+								<h6 class="m-0">
+										<a class="text-reset stretched-linka" href="#"><span class="me-1">[{{before_pay_campaign.company_name}}]</span>{{before_pay_campaign.subject}}</a>
+								</h6>
+								<span class="small">{{before_pay_campaign.provide}}</span>
+							</div>
+							<div class="product-actions d-flex align-items-end">
+									<div class="price">
+											<h6 class="m-0">신청 {{before_pay_campaign.offer_user.all.count}}명<span class="text-body fw-400">/{{before_pay_campaign.limit_offer}}명</span> </h6>
+									</div>
+									<div class="like ms-auto">
+											<a href="#" class="d-flex lh-1 fw-500 text-reset">
+												<i class="bi bi-heart me-1"></i>
+												<small>{{before_pay_campaign.favorite_user.all.count}}</small>
+											</a>
+									</div>
+							</div>
+							<div class="product-footer">
+								<span class="badge bg-info">New</span>
+								{% if before_pay_campaign.reward != 0 %}
+								<span class="badge border text-dark">+{{before_pay_campaign.reward|intcomma}}P</span>
+								{% endif %}
+							</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-6">
+				<div class="product-card mb-3 p-3">
+					<h6 class="ps-3 py-2">결제 예상 금액</h6>
+					<ul class="list-group list-group-flush mb-4">
+						<li class="list-group-item">
+							<span class="float-start">모집기간 :</span>
+							<span class="float-end"><strong id="finished_at">0</strong>원</span>
+						</li>
+
+						<li class="list-group-item">
+							<span class="float-start">모집인원 :</span>
+							<span class="float-end"><strong id="limit_offer">0</strong>원</span>
+						</li>
+
+						<li class="list-group-item d-none">
+							<span class="float-start">제공 리워드 :</span>
+							<span class="float-end"><strong id="reward">0</strong>원</span>
+						</li>
+						
+						<li class="list-group-item">
+							<span class="float-start">노출 옵션 :</span>
+							<span class="float-end"><strong id="item">0</strong>원</span>
+						</li>
+
+						<li class="list-group-item">
+							<span class="float-start">캠페인 등록비 :</span>
+							<span class="float-end"><strong>100</strong>원</span>
+						</li>
+					</ul>
+
+					
+					<div class="row px-3">
+						<p class="lead fw-bold w-50">합계 :</p>
+						<p class="text-primary text-end lead w-50"><strong id="total_price">0</strong>원</p>
+					</div>
+				</div>
+
+
+				<div id="payment_option">
+					<div class="product-card mb-3 p-4">
+						<h6>결제 수단</h6>
+						<div class="btn-group btn-group-sm w-100 mt-3">
+							<input type="radio" class="btn-check" name="pay_method" value="card" id="btnradio1">
+							<label class="btn btn-outline-primary w-50" for="btnradio1">신용카드</label>
+
+							<input type="radio" class="btn-check" name="pay_method" value="trans" id="btnradio2">
+							<label class="btn btn-outline-primary w-50" for="btnradio2">실시간계좌이체</label>
+						</div>
+						<div class="btn-group btn-group-sm w-100  mt-1">
+							<input type="radio" class="btn-check" name="pay_method" value="vbank" id="btnradio3">
+							<label class="btn btn-outline-primary w-50" for="btnradio3">가상계좌</label>
+
+							<input type="radio" class="btn-check" name="pay_method" value="phone" id="btnradio4">
+							<label class="btn btn-outline-primary w-50" for="btnradio4">휴대폰결제</label>
+						</div>
+
+						<div class="btn-group btn-group-sm w-100  mt-1">
+							<input type="radio" class="btn-check" name="pay_method" value="kakaopay" id="btnradio5">
+							<label class="btn btn-outline-primary w-50" for="btnradio5">카카오페이</label>
+						</div>
+					</div>
+
+					<div class="product-card p-4">
+						<div class="row mb-2">
+							<div class="col-sm-4 d-flex justify-content-between align-items-start">
+								<p class="mt-2">포인트사용 :</p>
+							</div>
+							<div class="col-sm-8 d-flex flex-wrap justify-content-between align-items-center">
+								<div class="input-group input-group-sm">
+									<input type="text" name="use_point" class="form-control text-end" value="0">
+									<span class="input-group-text bg-white">P</span>
+								</div>
+								<span class="opacity-8 small">보유 포인트 : {{request.user.point|intcomma}} P</span>
+							</div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-sm-4 d-flex justify-content-between align-items-start">
+								<p class="fw-bold">최종금액 :</p>
+							</div>
+							<div class="col-sm-8 d-flex flex-wrap justify-content-end align-items-center">
+								<p class="text-primary text-end lead"><strong id="pay_amount">100</strong>원</p>
+							</div>
+						</div>
+
+						<button class="w-100 btn btn-primary mt-2" onclick="payment_submit();">결제하기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- iamport.payment.js -->
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+
+<script>
+	$(document).ready(function() {
+		document.getElementById("finished_at").innerHTML = String(("{{recruit_day}}"-3)*2000).replace(/\B(?=(\d{3})+(?!\d))/g, ',');; //모집기간
+		document.getElementById("limit_offer").innerHTML = String("{{before_pay_campaign.limit_offer}}"*5000).replace(/\B(?=(\d{3})+(?!\d))/g, ','); //모집인원
+		document.getElementById("item").innerHTML = "{{item_price|intcomma}}"; //노출옵션
+
+
+		const limit_offer = Number(document.getElementById("limit_offer").innerText.replace(/[^0-9]/g,''));
+		const finished_at = Number(document.getElementById("finished_at").innerText.replace(/[^0-9]/g,''));
+		const reward = Number(document.getElementById("reward").innerText.replace(/[^0-9]/g,''));
+		const item = Number(document.getElementById("item").innerText.replace(/[^0-9]/g,''));
+		const total_price = String(limit_offer + finished_at + reward + item + 100).replace(/[^0-9]/g,'').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+		document.getElementById("total_price").innerText = total_price;
+		document.getElementById("pay_amount").innerText = total_price;
+	});
+
+
+	$("input[name='use_point']").on('propertychange change keyup paste input', function (event) {
+		const total_price = Number(document.getElementById("total_price").innerText.replace(/[^0-9]/g,''));
+		this.value = this.value.replace(/[^0-9]/g,'')
+		if (this.value>total_price) {
+			this.value = total_price;
+		}
+		if (this.value>Number("{{request.user.point}}")) {
+			this.value = "{{request.user.point}}";
+		}
+		
+		document.getElementById("pay_amount").innerText = String(total_price-this.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+		this.value = this.value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	});
+
+
+	function payment_submit(){
+		const pay_amount = document.getElementById("pay_amount").innerText.replace(/[^0-9]/g, '');
+		let pay_method = $('input[name=pay_method]:checked').val();
+		if (isEmpty(pay_method)){
+			openPopup('알림','결제수단을 선택해주세요.');
+			return false;
+		}
+		if (pay_method  == 'kakaopay') {
+			pg = "kakaopay";
+		} else {
+			//pg = "kcp";
+			pg = "uplus";
+		}
+
+		IMP.init('imp14216181');
+
+		IMP.request_pay({
+			pg : pg, // version 1.1.0부터 지원.
+			pay_method : pay_method,
+			merchant_uid : "{{before_pay_campaign.merchant_uid}}",
+			name : "{{before_pay_campaign.subject}}",
+			amount : pay_amount, //판매 가격
+			display: {
+				card_quota:["2","3"],
+			},
+			custom_data: {
+				referral: "campaign",
+				use_point: $("input[name='use_point']").val(),
+			},
+			buyer_name : "{{request.user.full_name}}",
+			buyer_tel : "{{request.user.phone_number}}",
+			buyer_email : "{{request.user.email}}",
+			m_redirect_url : "{% url 'UserCampaign' %}",
+		}, function(rsp) {
+			if ( rsp.success ) {
+				$.ajax({
+					type : 'POST',
+					headers: { "X-CSRFToken": '{{csrf_token}}' },
+					url : "{{request.path}}",
+					data : {
+							imp_uid: rsp.imp_uid,
+							pay_method: pay_method,
+							merchant_uid: rsp.merchant_uid,
+							use_point: $("input[name='use_point']").val()
+					},
+					dataType : 'json',
+					success: function(data){
+						if(data.result==200){
+							openPopup("알림", data.result_text, '', `location.replace('{% url 'UserCampaign' %}');`);
+						}else{
+							openPopup("알림", data.result_text, '', `location.replace('{% url 'UserCampaign' %}');`);
+						}
+						return;
+					},
+					error: function (request, status, error){
+						var msg = "ERROR : " + request.status + "<br>"
+						msg +=  + "내용 : " + request.responseText + "<br>" + error;
+						console.log(msg);
+					}
+				});
+			} else {
+				var msg = '결제에 실패하였습니다.';
+				msg += '에러내용 : ' + rsp.error_msg;
+				openPopup("알림", msg, '', 'reload');
+			}
+		});
+	}
+
+</script>
+{% endblock %}

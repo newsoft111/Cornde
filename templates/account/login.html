@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+<!-- Section -->
+<section class="section">
+	<div class="container">
+			<div class="row justify-content-center">
+					<div class="col-md-7 col-lg-6 col-xl-5">
+							<div class="card">
+									<div class="card-body p-4 p-xl-5">
+											<h3 class="mb-4 text-center">로그인</h3>
+											<form name="loginForm">
+												{% csrf_token %}
+													<div class="pb-3">
+															<label class="form-label">이메일</label>
+															<input type="text" name="email" class="form-control" placeholder="이메일을 입력해주세요.">
+													</div>
+													<div class="pb-3">
+															<label class="form-label">비밀번호</label>
+															<input type="password" name="password" class="form-control" placeholder="비밀번호를 입력해주세요.">
+													</div>
+													<div class="form-check m-0 pb-3 clearfix">
+														<div class="text-left" style="float:left">
+															<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+															<label class="form-check-label" for="flexCheckDefault">
+																	로그인 유지
+															</label>
+														</div>
+														<div class="text-right" style="float:right;">
+															<a style="color:#6e6e6e;" href="{% url 'FindPasswd' %}">비밀번호찾기</a>
+														</div>
+													</div>
+													<div class="pb-3">
+														<a href="#" class="w-100 btn btn-primary" onclick="login_submit();">로그인</a>
+													</div>
+													<div class="text-center"><small>아직 회원이 아니신가요?</small> <a href="{% url 'UserJoin' %}" class="small font-weight-bold">회원가입</a></div>
+											</form>
+									</div>
+							</div>
+					</div>
+			</div>
+	</div>
+</section>
+
+<script>
+	$(document).ready(function() {
+    $("form[name=loginForm]").keypress(function (e) {
+			if (e.keyCode === 13) {
+				login_submit();
+			}
+		});
+  });
+	
+	function login_submit() {
+		
+    var loginForm = document.loginForm;
+    var email = loginForm.email.value;
+    var password = loginForm.password.value;
+
+		var reg_email = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+        
+    if (isEmpty(email)) {
+      openPopup('알림','이메일을 입력해주세요.');
+			return false;
+		}
+		if (!reg_email.test(email)) {
+      openPopup('알림','올바른 이메일이 아닙니다.');
+			return false;
+    }
+		if (isEmpty(password)) {
+      openPopup('알림','비밀번호를 입력해주세요.');
+			return false;
+    }
+		
+    var queryString = $("form[name=loginForm]").serialize();
+ 
+    $.ajax({
+        type : 'POST',
+        url : "{{request.path}}",
+        data : queryString,
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+            location.replace("{% url 'Index' %}");
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+
+</script>
+{% endblock %}

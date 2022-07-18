@@ -1,0 +1,11 @@
+.after-none {
+	&:after {
+		display: none;
+	}
+}
+.dropdown-menu {
+	box-shadow: $box-shadow;
+	.dropdown-item {
+		border-radius: $border-radius;
+	}
+}

@@ -1,0 +1,67 @@
+// Gray
+@for $i from 1 through 100 {
+    .bg-gray-#{$i * 100 } {
+        background-color: var(--#{$px-prefix}-gray-#{$i * 100 });
+    }
+}
+
+@mixin bg-soft-variant($color, $soft-background: rgba($color, .1)) {
+  background-color: $soft-background;
+}
+@each $color, $value in $theme-colors {
+  .bg-#{$color}-soft {
+    @include bg-soft-variant($value);
+  }
+}
+
+.bg-body-rgb {
+    background: rgba($body-bg, .8);
+}
+
+.bg-mode {
+    background: darken($body-bg, 1.8%);
+}
+
+.blur-bg {
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+}
+
+.bg-body {
+    background-color: var(--px-body-bg) !important;
+}
+
+.bg-cover {
+    background-size: cover;
+}
+
+.bg-right-center {
+    background-position: center right;
+}
+
+.bg-no-repeat {
+    background-repeat: no-repeat;
+}
+
+.bg-center {
+    background-position: center;
+}
+
+@include media-breakpoint-up(lg) {
+  .bg-fixed {
+    background-attachment: fixed;
+  }
+}
+
+
+.body-bg-v2 {
+    background-color: var(--px-body-bg-v2);
+}
+
+.card-bg-v2 {
+    background-color: var(--px-card-bg-v2);
+}
+
+.card-bg-v2 {
+    background-color: var(--px-card-bg-v2);
+}

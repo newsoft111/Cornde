@@ -1,0 +1,5 @@
+@for $i from 1 through 100 {
+    .border-gray-#{$i * 100 } {
+        border-color: var(--#{$px-prefix}-gray-#{$i * 100 }) !important;
+    }
+}

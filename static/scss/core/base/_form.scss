@@ -1,0 +1,136 @@
+.input-group-text {
+	background-color: var(--px-gray-300);
+}
+
+.form-control {
+    .body-bg-v2 & {
+        background-color: var(--px-input-bg-v2);
+    }
+}
+
+.px-nice-select {
+	width: 100%;
+	background-color: var(--px-input-bg);
+    border: 1px solid var(--px-gray-300);
+    float: none;
+    padding: $btn-padding-y $btn-padding-x;
+    line-height: $btn-line-height;
+    height: inherit;
+    .body-bg-v2 & {
+        background-color: var(--px-input-bg-v2);
+    }
+    &.open,
+    &:focus,
+    &:hover {
+    	border-color: var(--px-gray-300);
+    }
+    .list {
+    	width: 100%;
+    	background-color: var(--px-dropdown-bg);
+    	color: var(--px-body-color);
+    }
+    .option {
+    	&.selected,
+    	&.selected.focus,
+    	&.focus,
+    	&:hover {
+    		background-color: rgba($primary, .1);
+    		color: $primary;
+    	}
+    }
+}
+
+
+.px-file-upload {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+    }
+    label {
+        width: 100%;
+        margin: 0;
+        border-radius: 15px;
+        padding: 40px 50px;
+        border: 2px dashed var(--px-gray-200);
+        text-align: center;
+    }
+}
+
+
+.px-avatar-upload {
+    input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+    }
+    .avatar-preview {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        cursor: pointer;
+        .avatar-preview-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-size: cover;
+        }
+    }
+}
+
+
+.card-check-box {
+    position: relative;
+    .card-check {
+        position: absolute;
+        top: 0;
+        opacity: 0;
+        left: 0;
+        &:checked {
+            ~ .card-check-btn {
+                ~ .card-body {
+                    background: rgba($primary, .1);
+                    .btn-primary-soft {
+                        background: $primary;
+                        color: $white;
+                    }
+                }
+                ~ .card-check-link {
+                    display: block;
+                }
+            } 
+        }
+    }
+    .card-check-btn {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        cursor: pointer;
+    }
+    .card-check-link {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -20px;
+        text-align: center;
+        display: none;
+    }
+}

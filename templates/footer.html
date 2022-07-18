@@ -1,0 +1,136 @@
+{% load static %}
+	
+</main>
+<!-- End Main -->
+<!-- Footer-->
+<footer class="footer footer-bg">
+	<div class="py-7 py-md-8 py-lg-4">
+		<div class="container">
+			<div class="row">
+					<div class="col-lg-4 my-3 me-auto">
+							<div class="pb-4">
+									<img class="footer-logo-dark" src="{% static 'img/logo.svg' %}" title="" alt="">
+							</div>
+							<p>두터운 유대관계. 광고주와 블로거 모두가 만족할 수 있는 체험단! 콘디에서 만나보세요. 콘디 마케팅 서비스. 블로그 체험단. SNS Marketing.</p>
+					</div>
+
+					<div class="col-lg-5 my-3">
+						<div class="row">
+							<div class="col-6">
+								<h5 class="mb-3">콘디</h5>
+								<ul class="list-unstyled">
+									<li class="mb-3">
+											<a href="{% url 'CampaignList' %}" class="text-muted">체험단</a>
+									</li>
+									<li class="mb-3">
+										<a href="{% url 'CheckNblog' %}" class="text-muted">블로그진단</a>
+									</li>
+									<li class="mb-3">
+										<a href="{% url 'CampaignWrite' %}" class="text-muted">체험단모집</a>
+								</li>
+								</ul>
+							</div>
+							
+							<div class="col-6">
+								<h5 class="mb-3">고객센터</h5>
+								<ul class="list-unstyled">
+									<li class="mb-3">
+											<a href="{% url 'QnaList' %}" class="text-muted">1대1 문의</a>
+									</li>
+									<li class="mb-3">
+										<a href="{% url 'FaqList' %}" class="text-muted">FAQ</a>
+									</li>
+									<li class="mb-3">
+										<a href="{% url 'Price' %}" class="text-muted">가격안내</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-lg-3 my-3">
+						<h6 class="footer-title-02">
+							회사정보
+						</h6>
+						<address>
+							<p class="mb-0">상호 : 콘디 | 대표 : 윤동준</p>
+							<p class="mb-0">사업자등록번호 : 719-42-00711</p>
+							<p class="mb-0">통신판매업신고 : 2022-충북청주-0913</p>
+							<p class="mb-0">주소 : 충북 청주시 흥덕구 증안로 21, 104동 402호</p>
+							<p class="mb-2">개인정보관리책임자 : 윤동준</p>
+							<p class="mb-1">이메일 : <a class="text-black" href="mailto:cornde@cornde.com">cornde@cornde.com</a></p>
+							<p class="mb-1">연락처 : <a class="text-black" href="tel:070-7918-9989">070-7918-9989</a></p>
+						</address>
+						<div class="nav pt-2">
+								<a class="icon-sm bg-black text-white me-2" href="#">
+									<i class="fab fa-youtube"></i>
+								</a>
+								</a>
+								<a class="icon-sm bg-black text-white me-2" target="_blank" href="https://www.instagram.com/cornde_official/">
+										<i class="fab fa-instagram"></i>
+								</a>
+						</div>
+					</div>
+					
+			</div>
+		</div>
+	</div>
+	<hr class="m-0 border-gray-100 opacity-1">
+	<div class="container">
+			<div class="row py-3 gy-3 align-items-center">
+					<div class="col-md-6">
+							<ul class="nav justify-content-center justify-content-md-start my-2 links-white small list-unstyled footer-link-01 m-0">
+									<li class="p-0 mx-3 ms-md-0 me-md-3"><a href="{% url 'Privacy' %}" class="link-white">개인정보처리방침</a></li>
+									<li class="p-0 mx-3 ms-md-0 me-md-3"><a href="{% url 'TermsOfService' %}" class="link-white">이용약관</a></li>
+							</ul>
+					</div>
+					<div class="col-md-6 text-center text-md-end">
+							<p class="text-white-85 small m-0">&copy; Copyright 2018<a href="/"> Cornde </a> All Rights Reserved </p>
+					</div>
+			</div>
+	</div>
+
+		
+</footer>
+<!-- End Footer -->
+</div>
+<!-- End Wrapper -->
+
+
+<!-- countTo -->
+<script src="{% static 'vendor/counter/jquery.countTo.js' %}"></script>
+<!-- owl-carousel -->
+<script src="{% static 'vendor/owl-carousel/js/owl.carousel.min.js' %}"></script>
+<!-- magnific -->
+<script src="{% static 'vendor/magnific/jquery.magnific-popup.min.js' %}"></script>
+<!-- count-down -->
+<script src="{% static 'vendor/count-down/jquery.countdown.js' %}"></script>
+<!-- nice-select -->
+<script src="{% static 'vendor/nice-select/jquery.nice-select.min.js' %}"></script>
+<!-- Theme Js -->
+<script src="{% static 'js/custom.js' %}"></script>
+
+<!-- Button trigger modal -->
+<input type="hidden" class="btn btn-primary" id="open_popup" data-bs-toggle="modal" data-bs-target="#exampleModal">
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h4 class="mb-0 text-center" id="modal_subject">알림</h4>
+        <button type="button" class="btn-close" id="closePopupBtn" data-before-modal="" onclick="closePopup()" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4" id="modal_content">
+      </div>
+      <div class="modal-footer">
+				<button type="button" class="btn btn-primary btn-md" id="closePopupBtn" data-before-modal="" onclick="closePopup()" data-bs-dismiss="modal">확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+<!-- end body -->
+
+</html>

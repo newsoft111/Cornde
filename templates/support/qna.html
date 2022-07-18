@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+<!-- Section -->
+<section class="section">
+	<div class="container">
+			<div class="row justify-content-center section-heading">
+					<div class="col-lg-9 col-xl-7 text-center">
+							<h3 class="h1 mb-3">1:1문의</h3>
+							<div class="lead">서비스에 대해 궁금한 모든 것을 물어보세요!</div>
+					</div>
+			</div>
+			<div class="row justify-content-center">
+					<div class="col-lg-10">
+							<div class="card">
+									<div class="card-body p-5 p-lg-7">
+											<form name="qnaForm">
+													{% csrf_token %}
+													<div class="row g-3">
+														<div class="col-12 d-flex flex-row">
+															<div class="form-group w-100 d-flex flex-column">
+																<label class="form-label" for="contact-message">문의유형</label>
+																<select class="px-nice-select" name="type">
+																	<option value="" data-display="문의유형 선택">문의유형 선택</option>
+																	<option value="이용방법 문의">이용방법 문의</option>
+																	<option value="프로젝트 관련 문의">캠페인 관련 문의</option>
+																	<option value="로그인/서비스 이용 문의">로그인/서비스 이용 문의</option>
+																	<option value="파트너 서비스 문의">파트너 서비스 문의</option>
+																	<option value="결제 관련 문의">결제 관련 문의</option>
+																	<option value="세금계산서/현금영수증 문의">세금계산서/현금영수증 문의</option>
+																	<option value="기타">기타</option>
+																</select>
+															</div>
+														</div>
+													
+														<div class="col-12 d-flex flex-row">
+																<div class="form-group w-100 d-flex flex-column">
+																		<label class="form-label">내용</label>
+																		<textarea class="form-control w-100" name="content" rows="10" placeholder="문의를 남겨주시기 전에 먼저 FAQ를 확인해주세요.&#13;&#10;캠페인 문의는 모집링크를 입력해주시기 바랍니다."></textarea>
+																</div>
+														</div>
+														<div class="col-12 pt-2 text-end">
+																<a class="btn btn-primary" onclick="qna_submit();">문의하기</a>
+														</div>
+													</div>
+											</form>
+									</div>
+							</div>
+					</div>
+			</div>
+	</div>
+</section>
+
+<script>
+	function qna_submit() {
+		var qnaForm = document.qnaForm;
+    var type = qnaForm.type.value;
+		var content = qnaForm.content.value;
+		
+    
+		if (isEmpty(type)) {
+			openPopup('알림','캠페인 타입을 선택해주세요.');
+			return false;
+		}
+		if (isEmpty(content)) {
+			openPopup('알림','카테고리를 선택해주세요.');
+			return false;
+		}
+	
+
+		var queryString = new FormData(document.querySelector('form[name=qnaForm]'));
+ 
+    $.ajax({
+        type : 'POST',
+        url : "{{request.path}}",
+				enctype	: 'multipart/form-data',
+        data : queryString,
+        dataType : 'json',
+				processData: false,
+    		contentType: false,
+        success: function(data){
+          if(data.result==200){
+            openPopup("알림", data.result_text,'',"location.href = '{% url 'FaqList' %}'");
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+	}
+</script>
+{% endblock %}

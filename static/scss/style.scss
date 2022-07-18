@@ -1,0 +1,64 @@
+/*!
+ * Mombo
+ * Copyright pxdraft.
+*/
+
+// Custom fonts
+@import "custom/variables";
+
+
+
+// Core
+@import "variables";
+@import "font";
+
+
+// Vendor
+@import "../vendor/bootstrap/scss/bootstrap.scss";
+@import "root";
+@import "reroot";
+
+@import "../vendor/bootstrap/icons/bootstrap-icons.css";
+@import "../vendor/fontawesome/css/all.min.css";
+@import "../vendor/magnific/magnific-popup.css";
+@import "../vendor/owl-carousel/css/owl.carousel.min.css";
+@import "../vendor/nice-select/nice-select.css";
+
+
+
+// Header
+@import "core/header/header";
+@import "core/footer/footer";
+
+// Base
+@import "core/base/wrapper";
+@import "core/base/border";
+@import "core/base/color";
+@import "core/base/position";
+@import "core/base/dropdown";
+@import "core/base/height";
+@import "core/base/tab";
+@import "core/base/z-index";
+@import "core/base/owl";
+@import "core/base/card";
+@import "core/base/icon";
+@import "core/base/hover";
+@import "core/base/article";
+@import "core/base/loading";
+@import "core/base/avatar";
+@import "core/base/accordion";
+@import "core/base/buttons";
+@import "core/base/background";
+@import "core/base/font-weight";
+@import "core/base/section";
+@import "core/base/image";
+@import "core/base/effect";
+@import "core/base/form";
+@import "core/base/count-down";
+@import "core/base/opacity";
+@import "core/base/gradient-text";
+@import "core/base/letter-spacing";
+@import "core/base/product-details";
+
+
+

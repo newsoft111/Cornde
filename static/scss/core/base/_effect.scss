@@ -1,0 +1,198 @@
+.effect-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.effect-style-1 {
+    pointer-events: none;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 50%;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    background-color: $gray-100;
+}
+
+.right-effects {
+    position: fixed;
+    top: 50px;
+    right: 0;
+    bottom: auto;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: $secondary;
+    -webkit-filter: blur(100px);
+    filter: blur(100px);
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: -1;
+    @include media-breakpoint-down(lg) {
+        width: 300px;
+        height: 300px;
+    }
+    @include media-breakpoint-down(md) {
+        width: 250px;
+        height: 250px;
+    }
+    @include media-breakpoint-down(sm) {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+.left-effects {
+    position: fixed;
+    bottom: 50px;
+    left: 0;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: $primary;
+    -webkit-filter: blur(100px);
+    filter: blur(100px);
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: -1;
+    @include media-breakpoint-down(lg) {
+        width: 300px;
+        height: 300px;
+    }
+    @include media-breakpoint-down(md) {
+        width: 250px;
+        height: 250px;
+    }
+    @include media-breakpoint-down(sm) {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+
+
+@keyframes wave {
+    0%,
+    100% {
+        transform: scale(1, 1);
+    }
+
+    50% {
+        transform: scale(1, 1.075);
+    }
+}
+
+.svg-effect-1 {
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom:0;
+    margin: auto;
+    path {
+        transform-origin: center top;
+    }
+
+    .pxsvg-1st0 {
+        opacity: 0.4;
+    }
+
+    .pxsvg-1st1 {
+        fill: none;
+        stroke: rgba($primary, 0.4);
+        stroke-width: 1.4665;
+        stroke-miterlimit: 25;
+        animation: wave 5s c1bic-bezier(.445, .05, .55, .95) infinite;
+    }
+
+    .pxsvg-1st2 {
+        fill: none;
+        stroke: rgba($primary, 0.4);
+        stroke-width: 1.3094;
+        stroke-miterlimit: 25;
+        animation: wave 5s .1s cubic-bezier(.445, .05, .55, .95) infinite;
+    }
+
+    .pxsvg-1st3 {
+        fill: none;
+        stroke: rgba($primary, 0.4);
+        stroke-width: 1.1523;
+        stroke-miterlimit: 25;
+        animation: wave 5s 11 cubic-bezier(.445, .05, .55, .95) infinite;
+    }
+
+    .pxsvg-1st4 {
+        fill: none;
+        stroke: rgba($primary, 0.4);
+        stroke-width: 0.9952;
+        stroke-miterlimit: 25;
+        animation: wave 5s 115s cubic-bezier(.445, .05, .55, .95) infinite;
+    }
+
+    .pxsvg-1st5 {
+        fill: none;
+        stroke: rgba($primary, 0.4);
+        stroke-width: 0.838;
+        stroke-miterlimit: 25;
+        animation: wave 5s 21 cubic-bezier(.445, .05, .55, .95) infinite;
+    }
+
+    .pxsvg-1st6 {
+        fill: none;
+        stroke: rgba($primary, 0.4);
+        stroke-width: 0.6809;
+        stroke-miterlimit: 25;
+        animation: wave 5s 215s cubic-bezier(.445, .05, .55, .95) infinite;
+    }
+
+    .pxsvg-1st7 {
+        fill: none;
+        stroke: rgba($primary, 0.4);
+        stroke-width: 0.5238;
+        stroke-miterlimit: 25;
+        animation: wave 5s 31 cubic-bezier(.445, .05, .55, .95) infinite;
+    }
+
+    .pxsvg-1st8 {
+        fill: none;
+        stroke: rgba($primary, 0.4);
+        stroke-width: 0.3666;
+        stroke-miterlimit: 25;
+        animation: wave 5s 315s cubic-bezier(.445, .05, .55, .95) infinite;
+    }
+    @media only screen and (max-width: 300px) {
+        .pxsvg-1st1 {
+            stroke-width: 4.3995
+        }
+
+        .pxsvg-1st2 {
+            stroke-width: 3.9282
+        }
+
+        .pxsvg-1st3 {
+            stroke-width: 3.4569
+        }
+
+        .pxsvg-1st4 {
+            stroke-width: 2.9856
+        }
+
+        .pxsvg-1st5 {
+            stroke-width: 2.5140
+        }
+
+        .pxsvg-1st6 {
+            stroke-width: 2.0427
+        }
+
+        .pxsvg-1st7 {
+            stroke-width: 1.5714
+        }
+
+        .pxsvg-1st8 {
+            stroke-width: 1.0998
+        }
+    }
+}
+

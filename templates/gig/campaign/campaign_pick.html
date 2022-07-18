@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+{% load campaign_filter %}
+
+<section class="section position-relative">
+	<div class="container">
+			<div class="row justify-content-center section-heading">
+					<div class="col-lg-6 text-center">
+							<h5 class="h1">신청 체험단 리스트</h5>
+							<h6 class="m-0">선정 {{campaign_picked_count}}명<span class="text-body fw-400">/{{campaign_offer_list.0.campaign.limit_offer}}명</span> </h6>
+							<a href="{% url 'CampaignPickExport' campaign_offer_list.0.campaign.id %}" class="mt-2 btn btn-primary">체험단 리스트 엑셀 추출</a>
+					</div>
+			</div>
+			<div class="row g-3">
+				{% for campaignOfferList in campaign_offer_list %}
+				<div class="col-lg-3 col-6">
+						<div class="card position-relative">
+								<div class="card-body">
+										<div class="d-flex align-items-center">
+											<div class="avatar">
+												<img title="" alt="" class="avatar-img rounded-circle" src="{{campaignOfferList.user.avater.url}}">
+											</div>
+											<div class="col ps-3">
+													<h6 class="m-0">{{campaignOfferList.user.nickname}}</h6>
+											</div>
+											{% if campaignOfferList.is_picked %}
+											<div class="ms-auto">
+												<p class="icon-sm bg-primary text-white rounded-circle" href="#">
+														<i class="bi bi-check"></i>
+												</p>
+											</div>
+											{% endif %}
+										</div>
+										<p class="mt-1 small">{{campaignOfferList.appeal}}</p>
+										{% if campaignOfferList.is_picked %}
+										<div class="mt-1 small">
+											-연락처-
+											<p class="m-0">{{campaignOfferList.user.phone_number}}</p>
+										</div>
+										{% endif %}
+										{% if campaignOfferList.is_picked and campaignOfferList.campaign.campaign_type == '배송형' %}
+										<div class="mt-1 small">
+											-배송주소-
+											<p class="m-0">이름 : {{campaignOfferList.shipping_address.receiver}}</p>
+											<p class="m-0">연락처 : {{campaignOfferList.shipping_address.phone_number}}</p>
+											<p class="m-0">주소 : {{campaignOfferList.shipping_address.base_address}}</p>
+											<p class="m-0">{{campaignOfferList.shipping_address.detail_address}}</p>
+											<p class="m-0">우편번호 : {{campaignOfferList.shipping_address.zipcode}}</p>
+										</div>
+										{% endif %}
+										<div class="border-top border-gray-100 mt-3 pt-3 row gx-2">
+												{% if campaignOfferList.is_picked %}
+													{% if campaignOfferList.gigcampaignreview_set.all.0.review_url %}
+													<div class="col-lg-6 mb-2">
+														<a class="btn w-100 btn-primary-soft" target="_blank" href="{{campaignOfferList.gigcampaignreview_set.all.0.review_url}}">리뷰보기</a>
+													</div>
+													{% if campaignOfferList.gigcampaignreview_set.all.0.is_confirm %}
+													<div class="col-lg-6 mb-2">
+														<a class="btn w-100 btn-primary disabled" href="#">완료</a>
+													</div>
+													{% else %}
+													<div class="col-lg-6 mb-2">
+														<a class="btn w-100 btn-primary" href="#" onclick="campaign_confirm_submit(this);" data-url="{% url 'CampaignConfirm' campaignOfferList.gigcampaignreview_set.all.0.id %}">완료</a>
+													</div>
+													{% endif %}
+													{% else %}
+													<div class="col-lg-6 mb-2">
+														<a class="btn w-100 btn-primary-soft" href="{{campaignOfferList.sns_url}}" target="_blank">SNS보기</a>
+													</div>
+													<div class="col-lg-6 mb-2">
+														<a class="btn w-100 btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#campaignPickCancelCheck" onclick="set_offer_id('{{campaignOfferList.id}}');">취소하기</a>
+													</div>
+													<div class="col-12 mb-2">
+														<a class="btn w-100 btn-primary-soft disabled" href="#">작성대기중</a>
+													</div>
+													{% endif %}
+												{% else %}
+												<div class="col-lg-6 mb-2">
+													<a class="btn w-100 btn-primary-soft" href="{{campaignOfferList.sns_url}}" target="_blank">SNS보기</a>
+												</div>
+												<div class="col-lg-6 mb-2">
+													<a class="btn w-100 btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#campaignPickCheck" onclick="set_offer_id('{{campaignOfferList.id}}');">선정하기</a>
+												</div>
+												{% endif %}
+										</div>
+								</div>
+						</div>
+				</div>
+				{% endfor %}
+			</div>
+			<div class="pt-6 text-center">
+				<a class="btn btn-primary-soft" href="{% url 'CampaignDetail' campaign_offer_list.0.campaign.id %}">
+					캠페인 바로가기
+				</a>
+			</div>
+	</div>
+</section>
+
+
+<div class="modal fade" data-bs-backdrop="static" id="campaignPickCancelCheck" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h4 class="mb-0 text-center">알림</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+			<form name="delShippingAddressForm">
+				{% csrf_token %}
+				<input type="hidden" name="address_id" value="">
+				<div class="modal-body p-4">
+					정말로 선정된 리뷰어를 취소하시겠습니까?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-primary ms-1" onclick="campaign_pick_submit()">확인</button>
+					<button type="button" class="btn btn-primary btn-md" data-bs-dismiss="modal">취소</button>
+				</div>
+			</form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" data-bs-backdrop="static" id="campaignPickCheck" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h4 class="mb-0 text-center">알림</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+			<form name="delShippingAddressForm">
+				{% csrf_token %}
+				<input type="hidden" name="address_id" value="">
+				<div class="modal-body p-4">
+					정말로 해당 리뷰어를 선정하시겠습니까?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-primary ms-1" onclick="campaign_pick_submit()">확인</button>
+					<button type="button" class="btn btn-primary btn-md" data-bs-dismiss="modal">취소</button>
+				</div>
+			</form>
+    </div>
+  </div>
+</div>
+
+
+<script>
+	let offer_id = ''
+	function set_offer_id(e){
+		offer_id = e
+	}
+
+	function campaign_pick_submit() {
+
+		$.ajax({
+			type : 'POST',
+			url : "{{request.path}}",
+			headers: { "X-CSRFToken": '{{csrf_token}}' },
+			data : {
+				offer_id: offer_id,
+			},
+			dataType : 'json',
+			success: function(data){
+				if(data.result==200){
+					if (data.result_text) {
+						openPopup("알림", data.result_text,'',"reload");
+					} else {
+						openPopup("알림", data.result_text,);
+					}
+					return
+				}else{
+					openPopup("알림", data.result_text);
+				}
+				return;
+			},
+			error: function (request, status, error){
+				var msg = "ERROR : " + request.status + "<br>"
+				msg +=  + "내용 : " + request.responseText + "<br>" + error;
+				console.log(msg);
+			}
+		});
+	}
+
+	function campaign_confirm_submit(e) {
+
+		$.ajax({
+				type : 'GET',
+				url : e.dataset.url,
+				headers: { "X-CSRFToken": '{{csrf_token}}' },
+				dataType : 'json',
+				success: function(data){
+					if(data.result==200){
+						if (data.result_text) {
+							openPopup("알림", data.result_text,'',"reload");
+						} else {
+							openPopup("알림", data.result_text,);
+						}
+						return
+					}else{
+						openPopup("알림", data.result_text);
+					}
+					return;
+				},
+				error: function (request, status, error){
+					var msg = "ERROR : " + request.status + "<br>"
+					msg +=  + "내용 : " + request.responseText + "<br>" + error;
+					console.log(msg);
+				}
+		});
+	}
+</script>
+{% endblock %}

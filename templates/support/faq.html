@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+
+<!-- Section -->
+<section class="section pt-8 pt-lg-12">
+	<div class="container">
+			<div class="row justify-content-center">
+					<div class="col-lg-8 col-xl-7 text-center">
+							<h2 class="h1 mb-3">FAQ</h2>
+							<p class="mx-lg-8">자주 묻는 질문에 대한 답변을 확인할 수 있습니다.</p>
+							<form class="d-flex flex-column flex-md-row mt-4" method="GET" action="{% url 'FaqList' %}">
+									<input type="text" name="keyword" class="form-control me-sm-2 mb-2 mb-sm-0" placeholder="궁금하신 내용을 검색해 보세요.">
+									<button type="submit" class="btn btn-primary flex-shrink-0">검색하기</button>
+							</form>
+					</div>
+			</div>
+	</div>
+</section>
+
+<section class="section pt-0">
+	<div class="container">
+		<div class="row align-items-start">
+				<div class="col-12 ps-xl-5 mt-5 mt-lg-0">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'FaqList' %}?type=reviewer" class="text-muted lead">리뷰어</a></li>
+							<li class="breadcrumb-item"><a href="{% url 'FaqList' %}?type=biz" class="text-muted lead">비즈니스</a></li>
+						</ol>
+					</nav>
+
+					<ul class="nav nav-pills nav-fill mb-3">
+						<li class="nav-item">
+							<a class="nav-link text-muted" href="{% url 'FaqList' %}">TOP5</a>
+						</li>
+						{% for categoryList in category_list %}
+						<li class="nav-item">
+							<a class="nav-link text-muted" data-category="{{forloop.counter0}}" href="{% url 'FaqList' %}?category={{forloop.counter0}}{% if request.GET.type %}&type={{request.GET.type}}{% endif %}">{{categoryList}}</a>
+						</li>
+						{% endfor %}
+					</ul>
+
+					<div class="accordion accordion-flush" id="faq">
+						{% for faqList in faq_list %}
+						<div class="accordion-item">
+							<h2 class="accordion-header" id="faq_{{faqList.id}}">
+									<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq_{{faqList.id}}_1" aria-expanded="false">
+										<span class="fw-bold me-1">[{{faqList.category}}]</span>{{faqList.subject}}
+									</button>
+							</h2>
+							<div id="faq_{{faqList.id}}_1" class="accordion-collapse collapse" aria-labelledby="faq_{{faqList.id}}" data-bs-parent="#faq">
+									<div class="accordion-body">
+										{{faqList.content|safe}}
+									</div>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+		</div>
+	</div>
+</section>
+
+<section class="section border-top border-gray-100">
+	<div class="container">
+			<div class="row justify-content-center">
+					<div class="col-lg-6 text-center">
+							<h3 class="h1">도움이 필요하신가요?</h3>
+							<p class="lead">1:1 문의를 통해 상세하게 답변 드리겠습니다.</p>
+							<div class="pt-2">
+									<a class="btn btn-primary-soft" href="{% url 'QnaList' %}">문의하기</a>
+							</div>
+					</div>
+			</div>
+	</div>
+</section>
+
+<script>
+	$(document).ready(function() {
+		let category = get_parameter("category");
+		let type = get_parameter("type");
+
+		if (!isEmpty(category)) {
+			$(`a[class*=nav-link][data-category="${category}"]`).addClass("active");
+			$(`a[class*=nav-link][data-category="${category}"]`).removeClass("text-muted");
+		}else{
+			$(`a[class*=nav-link][href="{% url 'FaqList' %}"]`).addClass("active");
+			$(`a[class*=nav-link][href="{% url 'FaqList' %}"]`).removeClass("text-muted");
+		}
+
+		if (isEmpty(type) || type == 'reviewer') {
+			$(`a[class*=lead][href="{% url 'FaqList' %}?type=reviewer"`).addClass("fw-bold");
+		} else {
+			$(`a[class*=lead][href="{% url 'FaqList' %}?type=biz"`).addClass("fw-bold");
+		}
+
+	});
+
+
+</script>
+{% endblock %}

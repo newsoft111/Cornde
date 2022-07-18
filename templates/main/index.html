@@ -1,0 +1,358 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+{% load campaign_filter %}
+
+<!-- Section -->
+<section class="section">
+	<div class="container">
+			<div class="row align-items-center">
+					<div class="col-lg-6 pe-xl-9 py-5 py-md-6">
+							<h2 class="display-6">대행사 없이<br>직접 모집하는<br>체험단</h2>
+							<p class="lead">
+								광고주와 블로거 모두가 만족할 수 있는<br>
+								블로그 체험단 서비스 콘디! <br>
+							</p>
+							<div class="pt-3">
+									<a class="btn btn-primary me-3" href="{% url 'CampaignList' %}">
+										바로가기 <i class="bi bi-arrow-up-right ps-2"></i>
+									</a>
+							</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="owl-carousel" data-items="1" data-nav-dots="true" data-lg-items="1" data-md-items="1" data-sm-items="1" data-xs-items="1" data-space="15">
+							{% for topCampaignList in top_campaign_list %}
+							<div class="position-relative overflow-hidden rounded mb-4">
+									<img src="{{topCampaignList.thumbnail.url}}" title="" alt="">
+									<div class="shadow-lg rounded overflow-hidden m-4 position-absolute end-0 start-0 bottom-0 z-index-1">
+											<div class="row g-0 bg-white">
+													<div class="col-sm-8 col-12 position-relative p-sm-3 p-2">
+													{% for channelList in topCampaignList.channel|make_list %}
+														{% if channelList == '네이버블로그' %}
+														<span class="badge bg-naver">{{channelList}}</span>
+														{% elif channelList == '인스타그램' %}
+														<span class="badge bg-insta">{{channelList}}</span>
+														{% elif channelList == '유튜브' %}
+														<span class="badge bg-youtube">{{channelList}}</span>
+														{% elif channelList == '카페' %}
+														<span class="badge bg-cafe">{{channelList}}</span>
+														{% elif channelList == '네이버포스트' %}
+														<span class="badge bg-post">{{channelList}}</span>
+														{% else %}
+														<span class="badge bg-primary">{{channelList}}</span>
+														{% endif %}
+													{% endfor %}
+														<span class="badge bg-light text-muted">{{topCampaignList.campaign_type}}</span>
+														
+														<h6 class="m-0"><span class="me-1">[{{topCampaignList.company_name}}]</span>{{topCampaignList.subject}}</h6>
+													</div>
+													<div class="col-sm-4 p-sm-3 p-2 d-flex align-items-center">
+															<a class="btn btn-sm btn-primary w-100" href="{% url 'CampaignDetail' topCampaignList.id %}">자세히보기</a>
+													</div>
+											</div>
+									</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+			</div>
+	</div>
+</section>
+
+<!-- Section -->
+<section class="section pt-lg-0">
+	<div class="container">
+			<div class="row section-heading">
+					<div class="col-lg-5">
+							<h3 class="h2 m-0">베스트 리뷰어</h3>
+					</div>
+			</div>
+			<div class="owl-carousel owl-carousel-arrow-top owl-carousel-arrow-hide-md owl-carousel-dots-show-md" data-items="7" data-nav-dots="true" data-nav-arrow="true" data-lg-items="6" data-md-items="5" data-sm-items="3" data-xs-items="2" data-space="30">
+					<div class="card-box-4 mb-4 mb-md-0">
+							<a href="#" class="stretched-link"></a>
+							<div class="card-img">
+									<img src="{% static 'best_reviewer/1.jpg' %}" title="" alt="" />
+									<div class="icon-sm bg-primary text-white rounded-circle"><i class="bi bi-check2"></i></div>
+							</div>
+							<div class="card-info">
+									<h6 class="mb-0 h6">댕꿀댕꿀</h6>
+							</div>
+					</div>
+					<div class="card-box-4 mb-4 mb-md-0">
+							<a href="#" class="stretched-link"></a>
+							<div class="card-img">
+									<img src="{% static 'best_reviewer/2.jpg' %}" title="" alt="" />
+									<div class="icon-sm bg-primary text-white rounded-circle"><i class="bi bi-check2"></i></div>
+							</div>
+							<div class="card-info">
+									<h6 class="mb-0 h6">아크로신</h6>
+							</div>
+					</div>
+					<div class="card-box-4 mb-4 mb-md-0">
+							<a href="#" class="stretched-link"></a>
+							<div class="card-img">
+									<img src="{% static 'best_reviewer/3.jpg' %}" title="" alt="" />
+									<div class="icon-sm bg-primary text-white rounded-circle"><i class="bi bi-check2"></i></div>
+							</div>
+							<div class="card-info">
+									<h6 class="mb-0 h6">여따이름써요</h6>
+							</div>
+					</div>
+					<div class="card-box-4 mb-4 mb-md-0">
+							<a href="#" class="stretched-link"></a>
+							<div class="card-img">
+								<img src="{% static 'best_reviewer/3.gif' %}" title="" alt="" />
+								<div class="icon-sm bg-primary text-white rounded-circle"><i class="bi bi-check2"></i></div>
+							</div>
+							<div class="card-info">
+									<h6 class="mb-0 h6">아잉신</h6>
+							</div>
+					</div>
+					<div class="card-box-4 mb-4 mb-md-0">
+							<a href="#" class="stretched-link"></a>
+							<div class="card-img">
+								<img src="{% static 'best_reviewer/4.jpg' %}" title="" alt="" />
+								<div class="icon-sm bg-primary text-white rounded-circle"><i class="bi bi-check2"></i></div>
+							</div>
+							<div class="card-info">
+									<h6 class="mb-0 h6">밥쇠</h6>
+							</div>
+					</div>
+					<div class="card-box-4 mb-4 mb-md-0">
+							<a href="#" class="stretched-link"></a>
+							<div class="card-img">
+								<img src="{% static 'best_reviewer/5.jpg' %}" title="" alt="" />
+								<div class="icon-sm bg-primary text-white rounded-circle"><i class="bi bi-check2"></i></div>
+							</div>
+							<div class="card-info">
+									<h6 class="mb-0 h6">컴뱃암즈</h6>
+							</div>
+					</div>
+					<div class="card-box-4 mb-4 mb-md-0">
+							<a href="#" class="stretched-link"></a>
+							<div class="card-img">
+								<img src="{% static 'best_reviewer/6.jpg' %}" title="" alt="" />
+								<div class="icon-sm bg-primary text-white rounded-circle"><i class="bi bi-check2"></i></div>
+							</div>
+							<div class="card-info">
+									<h6 class="mb-0 h6">정복자유미</h6>
+							</div>
+					</div>
+					<div class="card-box-4 mb-4 mb-md-0">
+							<a href="#" class="stretched-link"></a>
+							<div class="card-img">
+								<img src="{% static 'best_reviewer/7.jpg' %}" title="" alt="" />
+								<div class="icon-sm bg-primary text-white rounded-circle"><i class="bi bi-check2"></i></div>
+							</div>
+							<div class="card-info">
+									<h6 class="mb-0 h6">Miracle엔피</h6>
+							</div>
+					</div>
+					<div class="card-box-4 mb-4 mb-md-0">
+							<a href="#" class="stretched-link"></a>
+							<div class="card-img">
+								<img src="{% static 'best_reviewer/8.jpg' %}" title="" alt="" />
+								<div class="icon-sm bg-primary text-white rounded-circle"><i class="bi bi-check2"></i></div>
+							</div>
+							<div class="card-info">
+									<h6 class="mb-0 h6">아기꽥꽥</h6>
+							</div>
+					</div>
+			</div>
+	</div>
+</section>
+<!-- End Section -->
+
+<section class="py-5 py-lg-8">
+	<div class="container">
+		<div class="row section-heading">
+			<div class="col-lg-12 d-flex align-items-center">
+					<h3 class="h2 m-0">신규 캠페인</h3>
+					<a class="btn btn-primary-soft btn-sm ms-auto" href="{% url 'CampaignList' %}">더보기 <i class="bi bi-arrow-right ms-1"></i> </a>
+			</div>
+		</div>
+
+		<div class="row mb-7 gy-4">
+
+			{% for newCampaignList in new_campaign_list %}
+			<div class="col-md-4 col-sm-6 col-lg-3">
+					<div class="product-card h-100">
+							<div class="product-card-img-box">
+									<a href="{% url 'CampaignDetail' newCampaignList.id %}">
+											<img class="product-card-img" src="{{newCampaignList.thumbnail.url}}" title="" alt="">
+									</a>
+							</div>
+							<div class="product-card-body">
+									<div class="product-title mb-3">
+									{% for channelList in newCampaignList.channel|make_list %}
+										{% if channelList == '네이버블로그' %}
+										<span class="badge bg-naver">{{channelList}}</span>
+										{% elif channelList == '인스타그램' %}
+										<span class="badge bg-insta">{{channelList}}</span>
+										{% elif channelList == '유튜브' %}
+										<span class="badge bg-youtube">{{channelList}}</span>
+										{% elif channelList == '카페' %}
+										<span class="badge bg-cafe">{{channelList}}</span>
+										{% elif channelList == '네이버포스트' %}
+										<span class="badge bg-post">{{channelList}}</span>
+										{% else %}
+										<span class="badge bg-primary">{{channelList}}</span>
+										{% endif %}
+									{% endfor %}
+										<span class="badge bg-light text-muted">{{newCampaignList.campaign_type}}</span>
+										<h6 class="m-0">
+												<a class="text-reset stretched-linka" href="{% url 'CampaignDetail' newCampaignList.id %}"><span class="me-1">[{{newCampaignList.company_name}}]</span>{{newCampaignList.subject}}</a>
+										</h6>
+										<span class="small">{{newCampaignList.provide}}</span>
+									</div>
+									<div class="product-actions d-flex align-items-end">
+											<div class="price">
+													<h6 class="m-0">신청 {{newCampaignList.offer_user.all.count}}명<span class="text-body fw-400">/{{newCampaignList.limit_offer}}명</span> </h6>
+											</div>
+											<div class="like ms-auto">
+													<a href="#" onclick="campaign_favorite_submit(this);" data-campaign-id="{{newCampaignList.id}}" class="d-flex lh-1 fw-500 text-reset">
+														{% if request.user in newCampaignList.favorite_user.all %}
+															<i class="bi bi-heart-fill me-1 text-danger"></i>
+														{% else %}
+															<i class="bi bi-heart me-1"></i>
+														{% endif %}
+															<small>{{newCampaignList.favorite_user.all.count}}</small>
+													</a>
+											</div>
+									</div>
+									<div class="product-footer">
+										<span class="badge bg-info">New</span>
+										{% if newCampaignList.reward != 0 %}
+										<span class="badge border text-dark">+{{newCampaignList.reward|intcomma}}P</span>
+										{% endif %}
+									</div>
+							</div>
+					</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+
+<section class="py-5 py-lg-8">
+	<div class="container">
+		<div class="row section-heading">
+			<div class="col-lg-12 d-flex align-items-center">
+					<h3 class="h2 m-0">추천 캠페인</h3>
+					<a class="btn btn-primary-soft btn-sm ms-auto" href="{% url 'CampaignList' %}">더보기 <i class="bi bi-arrow-right ms-1"></i> </a>
+			</div>
+		</div>
+
+		<div class="row mb-7 gy-4">
+
+			{% for recommendCampaignList in recommend_campaign_list %}
+			<div class="col-md-4 col-sm-6 col-lg-3">
+					<div class="product-card h-100">
+							<div class="product-card-img-box">
+									<a href="{% url 'CampaignDetail' recommendCampaignList.id %}">
+											<img class="product-card-img" src="{{recommendCampaignList.thumbnail.url}}" title="" alt="">
+									</a>
+							</div>
+							<div class="product-card-body">
+									<div class="product-title mb-3">
+									{% for channelList in recommendCampaignList.channel|make_list %}
+										{% if channelList == '네이버블로그' %}
+										<span class="badge bg-naver">{{channelList}}</span>
+										{% elif channelList == '인스타그램' %}
+										<span class="badge bg-insta">{{channelList}}</span>
+										{% elif channelList == '유튜브' %}
+										<span class="badge bg-youtube">{{channelList}}</span>
+										{% elif channelList == '카페' %}
+										<span class="badge bg-cafe">{{channelList}}</span>
+										{% elif channelList == '네이버포스트' %}
+										<span class="badge bg-post">{{channelList}}</span>
+										{% else %}
+										<span class="badge bg-primary">{{channelList}}</span>
+										{% endif %}
+									{% endfor %}
+										<span class="badge bg-light text-muted">{{recommendCampaignList.campaign_type}}</span>
+										<h6 class="m-0">
+												<a class="text-reset stretched-linka" href="{% url 'CampaignDetail' recommendCampaignList.id %}"><span class="me-1">[{{recommendCampaignList.company_name}}]</span>{{recommendCampaignList.subject}}</a>
+										</h6>
+										<span class="small">{{recommendCampaignList.provide}}</span>
+									</div>
+									<div class="product-actions d-flex align-items-end">
+											<div class="price">
+													<h6 class="m-0">신청 {{recommendCampaignList.offer_user.all.count}}명<span class="text-body fw-400">/{{recommendCampaignList.limit_offer}}명</span> </h6>
+											</div>
+											<div class="like ms-auto">
+													<a href="#" onclick="campaign_favorite_submit(this);" data-campaign-id="{{recommendCampaignList.id}}" class="d-flex lh-1 fw-500 text-reset">
+														{% if request.user in recommendCampaignList.favorite_user.all %}
+															<i class="bi bi-heart-fill me-1 text-danger"></i>
+														{% else %}
+															<i class="bi bi-heart me-1"></i>
+														{% endif %}
+															<small>{{recommendCampaignList.favorite_user.all.count}}</small>
+													</a>
+											</div>
+									</div>
+									<div class="product-footer">
+										<span class="badge bg-info">New</span>
+										{% if recommendCampaignList.reward != 0 %}
+										<span class="badge border text-dark">+{{recommendCampaignList.reward|intcomma}}P</span>
+										{% endif %}
+									</div>
+							</div>
+					</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+<!-- Effect -->
+<div class="left-effects"></div>
+<div class="right-effects"></div>
+<!-- End Effect -->
+
+
+<script>
+	function campaign_favorite_submit(e) {
+		let favorite_i_tag = e.children[0];
+		let favorite_smaill_tag = e.children[1];
+    $.ajax({
+        type : 'POST',
+        url : "{% url 'CampaignFavorite' %}",
+				headers: { "X-CSRFToken": '{{csrf_token}}' },
+        data : {
+					campaign_id: $(e).attr('data-campaign-id'),
+				},
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+            if (data.result_text) {
+							favorite_i_tag.className = '';
+							favorite_i_tag.classList.add('bi', 'bi-heart-fill', 'me-1', 'text-danger');
+							favorite_smaill_tag.innerText = Number(favorite_smaill_tag.innerText)+1
+						} else {
+							favorite_i_tag.className = '';
+							favorite_i_tag.classList.add('bi', 'bi-heart', 'me-1');
+							favorite_smaill_tag.innerText = Number(favorite_smaill_tag.innerText)-1
+						}
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+		
+	$(document).ready(function() {
+		{% if message is not None %}
+		openPopup('알림',"{{message|safe}}");
+		{% endif %}
+	});
+</script>
+
+
+{% endblock %}

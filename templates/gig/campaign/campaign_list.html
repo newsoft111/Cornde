@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+{% load campaign_filter %}
+
+<section class="py-4 border-bottom border-gray-100 bg-body z-index-8">
+	<div class="container">
+		<form>
+			<div class="row g-2">
+				<div class="col-12 col-md-12 col-lg-2 align-self-center">
+					<h6 class="m-0">Filter By</h6>
+				</div>
+
+				<div class="col-6 col-md-3 col-lg-2">
+					<select class="px-nice-select" name="category">
+						<option value="" data-display="카테고리">카테고리</option>
+						{% for categoryList in category_list %}
+						<option value="{{forloop.counter0}}">{{categoryList}}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-6 col-md-3 col-lg-2">
+					<select class="px-nice-select" name="channel">
+						<option value="" data-display="활동 채널">활동 채널</option>
+						{% for channelList in channel_list %}
+						<option value="{{forloop.counter0}}">{{channelList}}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-6 col-md-3 col-lg-2">
+					<select class="px-nice-select" name="type">
+						<option value="" data-display="캠페인 타입">캠페인 타입</option>
+						{% for typeList in type_list %}
+						<option value="{{forloop.counter0}}">{{typeList}}</option>
+						{% endfor %}
+					</select>
+				</div>
+
+				<div class="col-6 col-md-3 col-lg-2">
+					<input type="text" name="keyword" class="form-control" placeholder="캠페인 검색">
+				</div>
+				
+				<div class="col-6 col-md-3 col-lg-2 d-flex justify-content-center">
+					<a href="{% url 'CampaignList' %}" class="btn btn-outline-primary mx-1 w-100">초기화</a>
+					<button type="submit" class="btn btn-primary w-100 mx-1">검색</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</section>
+
+
+<section class="py-5 py-lg-8">
+	<div class="container">
+		<div class="row mb-7 gy-4">
+
+			{% for campaignList in campaign_list %}
+			<div class="col-md-4 col-sm-6 col-lg-3">
+					<div class="product-card h-100">
+							<div class="product-card-img-box">
+									<a href="{% url 'CampaignDetail' campaignList.id %}">
+											<img class="product-card-img" src="{{campaignList.thumbnail.url}}" title="" alt="">
+									</a>
+							</div>
+							<div class="product-card-body">
+									<div class="product-title mb-3">
+									{% for channelList in campaignList.channel|make_list %}
+										{% if channelList == '네이버블로그' %}
+										<span class="badge bg-naver">{{channelList}}</span>
+										{% elif channelList == '인스타그램' %}
+										<span class="badge bg-insta">{{channelList}}</span>
+										{% elif channelList == '유튜브' %}
+										<span class="badge bg-youtube">{{channelList}}</span>
+										{% elif channelList == '카페' %}
+										<span class="badge bg-cafe">{{channelList}}</span>
+										{% elif channelList == '네이버포스트' %}
+										<span class="badge bg-post">{{channelList}}</span>
+										{% else %}
+										<span class="badge bg-primary">{{channelList}}</span>
+										{% endif %}
+									{% endfor %}
+
+										<span class="badge bg-light text-muted">{{campaignList.campaign_type}}</span>
+										<h6 class="m-0">
+												<a class="text-reset stretched-linka" href="{% url 'CampaignDetail' campaignList.id %}"><span class="me-1">[{{campaignList.company_name}}]</span>{{campaignList.subject}}</a>
+										</h6>
+										<span class="small">{{campaignList.provide}}</span>
+									</div>
+									<div class="product-actions d-flex align-items-end">
+											<div class="price">
+													<h6 class="m-0">신청 {{campaignList.offer_user.all.count}}명<span class="text-body fw-400">/{{campaignList.limit_offer}}명</span> </h6>
+											</div>
+											<div class="like ms-auto">
+													<a href="#" onclick="campaign_favorite_submit(this);" data-campaign-id="{{campaignList.id}}" class="d-flex lh-1 fw-500 text-reset">
+														{% if request.user in campaignList.favorite_user.all %}
+															<i class="bi bi-heart-fill me-1 text-danger"></i>
+														{% else %}
+															<i class="bi bi-heart me-1"></i>
+														{% endif %}
+															<small>{{campaignList.favorite_user.all.count}}</small>
+													</a>
+											</div>
+									</div>
+									<div class="product-footer">
+										{% if campaignList.started_at|check_new is not None %}
+										<span class="badge bg-info">New</span>
+										{% endif %}
+										{% if campaignList.reward != 0 %}
+										<span class="badge border text-dark">+{{campaignList.reward|intcomma}}P</span>
+										{% endif %}
+									</div>
+							</div>
+					</div>
+			</div>
+			{% endfor %}
+		</div>
+
+		<div class="mb-5">
+			<ul class="pagination justify-content-center m-0">
+				{% if campaign_list.has_previous %}
+				<li class="page-item ">
+					<a class="page-link" href="?p={{campaign_list.previous_page_number }}{% if 'channel' in request.GET %}&channel={{request.GET.channel}}{% endif %}{% if 'type' in request.GET %}&type={{request.GET.type}}{% endif %}">이전</a>
+				</li>
+				{% else %}
+				<li class="page-item disabled">
+					<span class="page-link">이전</span>
+				</li>
+				{% endif %}
+
+				{% for page_number in campaign_list.paginator.page_range %}
+					{% if page_number >= campaign_list.number|add:-2 and page_number <= campaign_list.number|add:2 %}
+						{% if page_number == campaign_list.number %}
+						<li class="page-item active">
+							<span class="page-link">{{ page_number }}</span>
+						</li>
+						{% else %}
+						<li class="page-item">
+								<a class="page-link" href="?p={{page_number }}{% if 'channel' in request.GET %}&channel={{request.GET.channel}}{% endif %}{% if 'type' in request.GET %}&type={{request.GET.type}}{% endif %}">{{ page_number }}</a>
+						</li>
+						{% endif %}
+					{% endif %}
+				{% endfor %}
+
+				{% if campaign_list.has_next  %}
+				<li class="page-item">
+					<a class="page-link" href="?p={{campaign_list.next_page_number }}{% if 'channel' in request.GET %}&channel={{request.GET.channel}}{% endif %}{% if 'type' in request.GET %}&type={{request.GET.type}}{% endif %}">다음</a> 
+				</li>
+				{% else %}
+				<li class="page-item disabled">
+					<span class="page-link">다음</span>
+				</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+</section>
+
+
+<script>
+	$(document).ready(function() {
+		let campaign_category = get_parameter("category");
+		let campaign_channel = get_parameter("channel");
+		let campaign_type = get_parameter("type");
+		let campaign_keyword = get_parameter("keyword");
+		
+		if (!isEmpty(campaign_category)) {
+			$("select[name=category]").val(campaign_category).prop("selected", true);
+		}
+		if (!isEmpty(campaign_channel)) {
+			$("select[name=channel]").val(campaign_channel).prop("selected", true);
+		}
+		if (!isEmpty(campaign_type)) {
+			$("select[name=type]").val(campaign_type).prop("selected", true);
+		}
+		if (!isEmpty(campaign_keyword)) {
+			$("input[name=keyword]").val(campaign_keyword);
+		}
+  });
+
+	function get_parameter(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+
+	function campaign_favorite_submit(e) {
+		let favorite_i_tag = e.children[0];
+		let favorite_smaill_tag = e.children[1];
+    $.ajax({
+        type : 'POST',
+        url : "{% url 'CampaignFavorite' %}",
+				headers: { "X-CSRFToken": '{{csrf_token}}' },
+        data : {
+					campaign_id: $(e).attr('data-campaign-id'),
+				},
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+            if (data.result_text) {
+							favorite_i_tag.className = '';
+							favorite_i_tag.classList.add('bi', 'bi-heart-fill', 'me-1', 'text-danger');
+							favorite_smaill_tag.innerText = Number(favorite_smaill_tag.innerText)+1
+						} else {
+							favorite_i_tag.className = '';
+							favorite_i_tag.classList.add('bi', 'bi-heart', 'me-1');
+							favorite_smaill_tag.innerText = Number(favorite_smaill_tag.innerText)-1
+						}
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+</script>
+{% endblock %}

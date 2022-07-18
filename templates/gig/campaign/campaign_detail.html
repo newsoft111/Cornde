@@ -1,0 +1,734 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+{% load campaign_filter %}
+
+<section class="section product-detail-section">
+	<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-10">
+					<div class="row">
+						<div class="col-lg-6">
+							<img class="rounded-3" src="{{campaign_detail.thumbnail.url}}" title="" alt="">
+						</div>
+						<div class="col-lg-6 ps-xl-7 mt-5 mt-lg-0">
+								<div class="product-details">
+										<div class="pd-heading">
+										{% for channelList in campaign_detail.channel|make_list %}
+											{% if channelList == '네이버블로그' %}
+											<span class="badge bg-naver me-1">{{channelList}}</span>
+											{% elif channelList == '인스타그램' %}
+											<span class="badge bg-insta me-1">{{channelList}}</span>
+											{% elif channelList == '유튜브' %}
+											<span class="badge bg-youtube me-1">{{channelList}}</span>
+											{% elif channelList == '카페' %}
+											<span class="badge bg-cafe me-1">{{channelList}}</span>
+											{% elif channelList == '네이버포스트' %}
+											<span class="badge bg-post me-1">{{channelList}}</span>
+											{% else %}
+											<span class="badge bg-primary me-1">{{channelList}}</span>
+											{% endif %}
+										{% endfor %}
+											<span class="badge bg-light text-muted">{{campaign_detail.campaign_type}}</span>
+											
+											<div class="pd-heading-right d-flex">
+													<button class="wishlist-btn" data-campaign-id="{{campaign_detail.id}}" onclick="campaign_favorite_submit(this);"><i class="bi bi-heart"></i></button>
+													{% if campaign_detail.user == request.user %}
+													<div class="dropdown">
+															<button class="bid-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+																	<i class="bi bi-three-dots"></i>
+															</button>
+															
+															<ul class="dropdown-menu dropdown-menu-end">
+																	<li><a class="dropdown-item" href="{% url 'CampaignUpdate' campaign_detail.id %}">수정하기</a></li>
+																	<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#delCampaignModal">환불하기</a></li>
+															</ul>
+													</div>
+													{% endif %}
+											</div>
+										</div>
+										<h2 class="m-0 text-break"><span class="me-1">[{{campaign_detail.company_name}}]</span>{{campaign_detail.subject}}</h2>
+										<h6 class="m-0">신청 {{campaign_detail.offer_user.all.count}}명<span class="text-body fw-400">/{{campaign_detail.limit_offer}}명</span> </h6>
+										<div class="pd-description pt-3">
+											<p class="text-break">{{campaign_detail.provide}}</p>
+										</div>
+										<div class="pt-2 pd-meta">
+											{% if campaign_detail.reward != 0 %}
+											<div class="row mb-3">
+												<div class="col-sm-4 d-flex justify-content-between align-items-center">
+													<p>제공 리워드</p>
+												</div>
+												<div class="col-sm-8 d-flex justify-content-between align-items-center">
+													<p class="text-gradient fw-600">{{campaign_detail.reward|intcomma}} P</p>
+												</div>
+											</div>
+											{% endif %}
+
+											<div class="row mb-2">
+												<div class="col-sm-4 d-flex justify-content-between align-items-center">
+													<p class="mb-0">리뷰어 모집기간</p>
+												</div>
+												<div class="col-sm-8 d-flex justify-content-between align-items-center">
+													<p class="text-mode mb-0">{{campaign_detail.started_at|date:'Y년 m월 d일'}} ~ {{campaign_detail.finished_at|date:'Y년 m월 d일'}}</p>
+												</div>
+											</div>
+
+											<div class="row mb-2">
+												<div class="col-sm-4 d-flex justify-content-between align-items-center">
+													<p class="mb-0">선정 체험단</p>
+												</div>
+												<div class="col-sm-8 d-flex justify-content-between align-items-center">
+													<p class="text-mode mb-0">{{campaign_picked_count}}명<span class="text-body fw-400">/{{campaign_detail.limit_offer}}명</span></p>
+												</div>
+											</div>
+										</div>
+										
+										
+
+										<div class="border-top border-gray-200 pt-4">
+											<div class="row g-2">
+												<div class="col-12">
+												{% if campaign_detail.user != user %}													
+													{% if request.user.full_name and request.user.birth_year is not None and request.user.phone_number %}
+														{% if campaign_offer.user == request.user and campaign_offer.is_picked %}
+															{% if campaign_offer.gigcampaignreview_set.all.0.review_url %}
+															<a class="btn btn-primary w-100" href="{{campaign_offer.gigcampaignreview_set.all.0.review_url}}">작성리뷰보기</a>
+															{% else %}
+															<a class="btn btn-primary w-100" href="#" data-bs-toggle="modal" data-bs-target="#campaignReviewModal">리뷰작성하기</a>
+															{% endif %}
+														{% else %}
+															{% if request.user in campaign_detail.offer_user.all %}
+															<a class="btn btn-primary w-100" href="#" onclick="campaign_offer_submit('cancel')">신청취소하기</a>
+															{% else %}
+															<a class="btn btn-primary w-100" href="#" data-bs-toggle="modal" data-bs-target="#offerCampaignModal">신청하기</a>
+															{% endif %}
+														{% endif %}
+													{% else %}
+														<a class="btn btn-primary w-100" href="#" onclick="openPopup('알림','신청 시 이름, 나이, 전화번호 정보가 필요합니다.<br>정보 수정 후 다시 시도해 주세요.','',`location.href='{% url 'UserProfile' %}';`);">신청하기</a>
+													{% endif %}
+												{% elif campaign_detail.offer_user.all.count > 0 %}
+												<a class="btn btn-primary w-100" href="{% url 'CampaignPick' campaign_detail.id %}">체험단 선정하기</a>
+												{% endif %}
+												</div>
+											</div>
+										</div>
+								</div>
+						</div>
+					</div>
+
+					{% if campaign_detail.campaign_type == '방문형' %}
+					<hr/>
+					<div class="row py-5">
+						<div class="col-sm-4 d-flex justify-content-start align-items-start">
+							<p class="between-h5-h6">방문정보</p>
+						</div>
+						<div class="col-sm-8 d-flex justify-content-start align-items-start">
+							<div class="w-100">
+								<div id="map" style="height:300px;"></div>
+								<p>{{campaign_detail.company_address}}</p>
+							</div>
+						</div>
+					</div>
+					{% endif %}
+					
+					<hr/>
+					<div class="row py-5">
+						<div class="col-sm-4 d-flex justify-content-start align-items-start">
+							<p class="between-h5-h6">제공내역</p>
+						</div>
+						<div class="col-sm-8 d-flex justify-content-start align-items-start">
+							<p class="text-muted mb-0 text-break">{{campaign_detail.provide}}</p>
+						</div>
+					</div>
+
+					<hr/>
+					<div class="row py-5">
+						<div class="col-sm-4 d-flex justify-content-start align-items-start">
+							<p class="between-h5-h6">검색키워드</p>
+						</div>
+						<div class="col-sm-8 d-flex justify-content-start align-items-start">
+							<p class="text-muted mb-0 text-break">{{campaign_detail.keyword}}</p>
+						</div>
+					</div>
+
+					<hr/>
+					<div class="row py-5">
+						<div class="col-sm-4 d-flex justify-content-start align-items-start">
+							<p class="between-h5-h6">가이드라인</p>
+						</div>
+						<div class="col-sm-8 d-flex flex-column justify-content-start align-items-start">
+							{{campaign_detail.guide_line|safe}}
+						</div>
+					</div>
+
+					{% if '네이버블로그' in campaign_detail.channel|make_list %}
+					<hr/>
+					<div class="row py-5">
+						<div class="col-sm-4 d-flex justify-content-start align-items-start">
+							<p class="between-h5-h6">스폰서 배너</p>
+						</div>
+						<div class="col-sm-8 d-flex flex-column justify-content-start align-items-start">
+							<div class="border text-center p-5 mb-3 w-100" id="sponsor-banner">
+								<p class="mb-0">본 리뷰는 <span class="fw-bold">{{campaign_detail.company_name}}</span>에게 대가를 제공받았으나,<br>
+								주관적인 생각으로 작성하였습니다.</p>
+							</div>
+
+							<div class="text-center w-100">
+								<p class="mb-0">(필수) 리뷰 작성 시 위 배너 이미지를 삽입해주세요.</p>
+								<p class="small">*크롬 앱/브라우저로 접속해서 다운로드 해주세요.</p>
+								<button type="button" onclick="save_sponsor_banner();" class="btn btn-primary">이미지 저장하기</button>
+							</div>
+						</div>
+					</div>
+					{% endif %}
+
+					{% if '유튜브' in campaign_detail.channel|make_list %}
+					<hr/>
+					<div class="row py-5">
+						<div class="col-sm-4 d-flex justify-content-start align-items-start">
+							<p class="between-h5-h6 mt-1">경제적 대가관계 표기</p>
+						</div>
+						<div class="col-sm-8 d-flex flex-column justify-content-start align-items-start">
+							<p class="mb-1 small fw-bold">아래 중 택 1</p>
+							<p class="mb-0">1.*이 영상은 유료 광고를 포함하고 있습니다.</p>
+							<p>2.*제품은 브랜드로부터 무상제공 받은 제품이지만, 개인 견해에는 영향을 미치지 않았음을 알려드립니다.</p>
+							<p class="mb-0">- 공정위문구 게재 법이 강화됨에 따라, 필수 삽입하여야 합니다.</p>
+							<p>- 위 문구를 표기하여 리뷰를 남겨주세요.</p>
+						</div>
+					</div>
+					{% endif %}
+
+					<hr/>
+					<div class="row py-5">
+						<div class="col-sm-4 d-flex justify-content-start align-items-start">
+							<p class="between-h5-h6 mt-1">주의사항</p>
+						</div>
+						<div class="col-sm-8 d-flex flex-column justify-content-start align-items-start">
+							<p class="mb-1">리뷰 작성 시 경제적 대가관계를 반드시 명시해주세요.</p>
+							<p class="mb-1">리뷰는 작성된 시점으로부터 3개월 간 필수로 유지되어야 합니다.</p>
+							<p class="mb-1">3개월 내 리뷰 비공개, 숨김, 보관, 삭제 시 5배의 위약금이 부과됩니다.</p>
+							<p class="mb-1">가이드라인과 다르게 작성/촬영된 경우 수정 요청을 드립니다.</p>
+							<p class="mb-0">제공받은 제품 및 서비스는 재판매가 불가합니다.</p>
+						</div>
+					</div>
+
+					<hr/>
+					<div class="row py-5">
+						<div class="col-sm-4 d-flex justify-content-start align-items-start">
+							<p class="between-h5-h6">담당자 연락처</p>
+						</div>
+						<div class="col-sm-8 d-flex flex-column justify-content-start align-items-start">
+							{% if campaign_offer_picked is not None %}
+							{{campaign_detail.user.phone_number}}
+							{% else %}
+							<p class="text-muted mb-0 text-break">선정된 리뷰어분들에게 노출되는 정보입니다.</p>
+							{% endif %}
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+
+			
+	</div>
+</section>
+<!-- End Section -->
+<!-- Section -->
+<section class="section pt-0 overflow-hidden">
+	<div class="container">
+		<div class="row justify-content-center section-heading">
+				<div class="col-lg-5 text-center">
+						<h3 class="h1 text-uppercase m-0 text-gradient d-inline-block"><span class="fw-400">추천캠페인 </span> </h3>
+				</div>
+		</div>
+		<div class="owl-carousel owl-no-overflow" data-items="4" data-nav-dots="true" data-lg-items="3" data-md-items="2" data-sm-items="2" data-xs-items="1" data-space="24">
+			{% for recommendCampaignList in recommend_campaign_list %}
+			<div class="product-card">
+					<div class="product-card-img-box">
+							<a href="{% url 'CampaignDetail' recommendCampaignList.id %}">
+								<img class="product-card-img" src="{{recommendCampaignList.thumbnail.url}}" title="" alt="">
+							</a>
+					</div>
+					<div class="product-card-body">
+							<div class="product-title mb-3">
+							{% for channelList in recommendCampaignList.channel|make_list %}
+								{% if channelList == '네이버블로그' %}
+								<span class="badge bg-naver">{{channelList}}</span>
+								{% elif channelList == '인스타그램' %}
+								<span class="badge bg-insta">{{channelList}}</span>
+								{% elif channelList == '유튜브' %}
+								<span class="badge bg-youtube">{{channelList}}</span>
+								{% elif channelList == '카페' %}
+								<span class="badge bg-cafe">{{channelList}}</span>
+								{% elif channelList == '네이버포스트' %}
+								<span class="badge bg-post">{{channelList}}</span>
+								{% else %}
+								<span class="badge bg-primary">{{channelList}}</span>
+								{% endif %}
+							{% endfor %}
+								<span class="badge bg-light text-muted">{{recommendCampaignList.campaign_type}}</span>
+								<h6 class="m-0">
+										<a class="text-reset stretched-linka" href="{% url 'CampaignDetail' recommendCampaignList.id %}"><span class="me-1">[{{recommendCampaignList.company_name}}]</span>{{recommendCampaignList.subject}}</a>
+								</h6>
+								<span class="small">{{recommendCampaignList.provide}}</span>
+							</div>
+							<div class="product-actions d-flex align-items-end">
+									<div class="price">
+											<h6 class="m-0">신청 {{recommendCampaignList.offer_user.all.count}}명<span class="text-body fw-400">/{{recommendCampaignList.limit_offer}}명</span> </h6>
+									</div>
+									<div class="like ms-auto">
+											<a href="#" onclick="campaign_favorite_submit(this);" data-campaign-id="{{recommendCampaignList.id}}" class="d-flex lh-1 fw-500 text-reset">
+												{% if request.user in recommendCampaignList.favorite_user.all %}
+													<i class="bi bi-heart-fill me-1 text-danger"></i>
+												{% else %}
+													<i class="bi bi-heart me-1"></i>
+												{% endif %}
+													<small>{{recommendCampaignList.favorite_user.all.count}}</small>
+											</a>
+									</div>
+							</div>
+							<div class="product-footer">
+								<span class="badge bg-info">New</span>
+								{% if recommendCampaignList.reward != 0 %}
+								<span class="badge border text-dark">+{{recommendCampaignList.reward|intcomma}}P</span>
+								{% endif %}
+							</div>
+					</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+
+
+<div class="modal fade" data-bs-backdrop="static" id="delShippingAddressModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h4 class="mb-0 text-center">알림</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+			<form name="delShippingAddressForm">
+				{% csrf_token %}
+				<input type="hidden" name="address_id" value="">
+				<div class="modal-body p-4">
+					정말로 삭제하시겠습니까?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-primary ms-1" onclick="del_shipping_address_submit()">삭제</button>
+					<button type="button" class="btn btn-primary btn-md" data-bs-dismiss="modal">취소</button>
+				</div>
+			</form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" data-bs-backdrop="static" id="campaignReviewModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h4 class="mb-0 text-center">알림</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+			<form name="campaignReviewForm">
+				{% csrf_token %}
+				<div class="modal-body p-4">
+					<div class="row mb-3">
+						<div class="col-sm-3 d-flex justify-content-between align-items-start">
+							<h6 class="mt-1">리뷰 주소</h6>
+						</div>
+						<div class="col-sm-9 d-flex justify-content-between align-items-center">
+							<input type="text" class="form-control" name="review_url" placeholder="작성하신 리뷰의 주소을 입력해주세요.">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary btn-md" onclick="campaign_review_submit();">완료</button>
+				</div>
+			</form>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" data-bs-backdrop="static" id="offerCampaignModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h4 class="mb-0 text-center">체험단 신청</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+			<form name="offerCampaignForm">
+				{% csrf_token %}
+				<div class="modal-body p-4">
+					<div class="row mb-3">
+						<div class="col-sm-3 d-flex justify-content-between align-items-center">
+							<h6 class="mb-4">SNS주소</h6>
+						</div>
+						<div class="col-sm-9 d-flex flex-wrap justify-content-between align-items-center">
+							<input type="text" class="form-control" name="sns_url" placeholder="SNS주소를 입력해주세요.">
+							<span class="opacity-8 small">
+								http:// 또는 https://를 포함한 주소를 입력해주세요.
+							</span>
+						</div>
+					</div>
+
+					<div class="row mb-3">
+						<div class="col-sm-3 d-flex justify-content-between align-items-start">
+							<h6 class="mt-1">전략</h6>
+						</div>
+						<div class="col-sm-9 d-flex justify-content-between align-items-center">
+							<textarea class="form-control" name="appeal" placeholder="전략을 어필해주세요." rows="5"></textarea>
+						</div>
+					</div>
+
+					<div class="row mb-3">
+						<div class="col-sm-3">
+							<h6 class="mt-3">배송지</h6>
+						</div>
+						<div class="col-sm-9">
+							<table class="table">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">배송지</th>
+										<th scope="col">받는이</th>
+										<th scope="col">주소/연락처</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for shippingAddressLsit in request.user.usershippingaddress_set.all %}
+									<tr>
+										<td>
+											<input type="radio" name="shipping_address" value="{{shippingAddressLsit.id}}" {% if shippingAddressLsit.is_default %} checked {%endif%}>
+										</td>
+										<th scope="row">
+											{{shippingAddressLsit.address_name}}
+											{% if shippingAddressLsit.is_default %}
+											<p class="fs-6 fw-normal">[기본배송지]</p>
+											{% endif %}
+										</th>
+										<td>{{shippingAddressLsit.receiver}}</td>
+										<td>
+											{{shippingAddressLsit.zipcode}})<br>
+											{{shippingAddressLsit.base_address}}<br>
+											{{shippingAddressLsit.detail_address}}<br>
+											{{shippingAddressLsit.phone_number}}
+										</td>
+									</tr>
+									{% endfor %}
+									<tr>
+										<td class="text-center" colspan="4">
+											<a href="{% url 'UserProfile' %}">배송지 추가</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary btn-md" onclick="campaign_offer_submit();">완료</button>
+				</div>
+			</form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" data-bs-backdrop="static" id="delCampaignModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h4 class="mb-0 text-center">알림</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+			<form name="delCampaignForm">
+				<div class="modal-body p-4">
+					정말로 삭제하시겠습니까?<br>
+					신청한 체험단이 있는경우 결제금액은 환불되지 않습니다.
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-primary ms-1" onclick="del_campaign_submit();">삭제</button>
+					<button type="button" class="btn btn-primary btn-md" data-bs-dismiss="modal">취소</button>
+				</div>
+			</form>
+    </div>
+  </div>
+</div>
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=dbbfcd4aa7cced26ef8efc88c92f97be&libraries=services"></script>
+
+<script>
+	$(document).ready(function() {
+		if ("{{campaign_detail.campaign_type}}" == "방문형") {
+			var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+			mapOption = {
+					center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+					level: 3 // 지도의 확대 레벨
+			};  
+
+			// 지도를 생성합니다    
+			var map = new kakao.maps.Map(mapContainer, mapOption); 
+
+			// 주소-좌표 변환 객체를 생성합니다
+			var geocoder = new kakao.maps.services.Geocoder();
+
+			// 주소로 좌표를 검색합니다
+			geocoder.addressSearch('{{campaign_detail.company_address}}', function(result, status) {
+
+					// 정상적으로 검색이 완료됐으면 
+					if (status === kakao.maps.services.Status.OK) {
+
+							var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+							// 결과값으로 받은 위치를 마커로 표시합니다
+							var marker = new kakao.maps.Marker({
+									map: map,
+									position: coords
+							});
+
+							// 인포윈도우로 장소에 대한 설명을 표시합니다
+							var infowindow = new kakao.maps.InfoWindow({
+									content: '<div style="width:150px;text-align:center;padding:6px 0;">{{campaign_detail.company_name}}</div>'
+							});
+							infowindow.open(map, marker);
+
+							// 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+							map.setCenter(coords);
+					} 
+			});    
+		}
+	});
+
+	function campaign_review_submit(cancel) {
+		let this_moal = "#campaignReviewModal";
+		var campaignReviewForm = document.campaignReviewForm;
+		var review_url = campaignReviewForm.review_url.value;
+				
+		if (isEmpty(review_url)) {
+			openPopup('알림','작성하신 리뷰의 주소을 입력해주세요.',this_modal);
+			return false;
+		}
+
+    var queryString = $("form[name=campaignReviewForm]").serialize();
+ 
+    $.ajax({
+        type : 'POST',
+        url : "{% url 'CampaignReview' campaign_detail.id %}",
+        data : queryString,
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+            openPopup("알림", data.result_text,'',"reload");
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+
+	function campaign_favorite_submit(e) {
+		let favorite_i_tag = e.children[0];
+		let favorite_smaill_tag = e.children[1];
+    $.ajax({
+        type : 'POST',
+        url : "{% url 'CampaignFavorite' %}",
+				headers: { "X-CSRFToken": '{{csrf_token}}' },
+        data : {
+					campaign_id: $(e).attr('data-campaign-id'),
+				},
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+            if (data.result_text) {
+							favorite_i_tag.className = '';
+							favorite_i_tag.classList.add('bi', 'bi-heart-fill', 'me-1', 'text-danger');
+							try {
+								favorite_smaill_tag.innerText = Number(favorite_smaill_tag.innerText)+1
+							} catch (e) {
+								console.log(e);
+							}
+						} else {
+							favorite_i_tag.className = '';
+							favorite_i_tag.classList.add('bi', 'bi-heart', 'me-1');
+							try {
+								favorite_smaill_tag.innerText = Number(favorite_smaill_tag.innerText)-1
+							} catch (e) {
+								console.log(e);
+							}
+						}
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+
+	function del_campaign_submit() {
+    $.ajax({
+        type : 'GET',
+        url : "{% url 'CampaignDelete' campaign_detail.id %}",
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+						openPopup("알림", data.result_text,"","location.replace('{% url 'CampaignList' %}');");
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+
+	function campaign_offer_submit(cancel) {
+		if (!cancel) {
+			var offerCampaignForm = document.offerCampaignForm;
+			var sns_url = offerCampaignForm.sns_url.value;
+			var appeal = offerCampaignForm.appeal.value;
+			let this_modal = "#offerCampaignModal";
+					
+			if (isEmpty(sns_url)) {
+				openPopup('알림','SNS주소를 입력해주세요.',this_modal);
+				return false;
+			}
+			if (isEmpty(appeal)) {
+				openPopup('알림','전략을 어필해주세요.',this_modal);
+				return false;
+			}
+		}
+
+		
+    var queryString = $("form[name=offerCampaignForm]").serialize();
+ 
+    $.ajax({
+        type : 'POST',
+        url : "{% url 'CampaignOffer' campaign_detail.id %}",
+        data : queryString,
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+            openPopup("알림", data.result_text,'',"reload");
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+
+	var find_addr_wrap = document.getElementById('addressAPI');
+
+	function foldDaumPostcode() {
+			// iframe을 넣은 element를 안보이게 한다.
+			find_addr_wrap.style.display = 'none';
+			find_addr_wrap.classList.remove('border');
+	}
+
+	function find_address() {
+		find_addr_wrap.classList.add('border');
+		// 현재 scroll 위치를 저장해놓는다.
+		var currentScroll = Math.max(document.body.scrollTop, document.documentElement.scrollTop);
+		new daum.Postcode({
+				oncomplete: function(data) {
+						// 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+						// 각 주소의 노출 규칙에 따라 주소를 조합한다.
+						// 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+						var addr = ''; // 주소 변수
+						var extraAddr = ''; // 참고항목 변수
+
+						//사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+						if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+								addr = data.roadAddress;
+						} else { // 사용자가 지번 주소를 선택했을 경우(J)
+								addr = data.jibunAddress;
+						}
+
+						// 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+						if(data.userSelectedType === 'R'){
+								// 법정동명이 있을 경우 추가한다. (법정리는 제외)
+								// 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+								if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+										extraAddr += data.bname;
+								}
+								// 건물명이 있고, 공동주택일 경우 추가한다.
+								if(data.buildingName !== '' && data.apartment === 'Y'){
+										extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+								}
+								// 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+								if(extraAddr !== ''){
+										extraAddr = ' (' + extraAddr + ')';
+								}
+								// 조합된 참고항목을 해당 필드에 넣는다.
+						}
+
+						// 우편번호와 주소 정보를 해당 필드에 넣는다.
+						document.getElementById('zipCode').value = data.zonecode;
+						document.getElementById("baseAddress").value = addr;
+						// 커서를 상세주소 필드로 이동한다.
+						document.getElementById("detailAddress").focus();
+
+						// iframe을 넣은 element를 안보이게 한다.
+						// (autoClose:false 기능을 이용한다면, 아래 코드를 제거해야 화면에서 사라지지 않는다.)
+						find_addr_wrap.style.display = 'none';
+
+						// 우편번호 찾기 화면이 보이기 이전으로 scroll 위치를 되돌린다.
+						document.body.scrollTop = currentScroll;
+				},
+				// 우편번호 찾기 화면 크기가 조정되었을때 실행할 코드를 작성하는 부분. iframe을 넣은 element의 높이값을 조정한다.
+				onresize : function(size) {
+					find_addr_wrap.style.height = size.height+'px';
+				},
+				width : '100%',
+				height : '100%'
+		}).embed(find_addr_wrap);
+
+		// iframe을 넣은 element를 보이게 한다.
+		find_addr_wrap.style.display = 'block';
+	}
+
+	function save_sponsor_banner() {
+		console.log('capture running')
+		html2canvas(document.getElementById('sponsor-banner'), {
+			letterRendering: 1,
+			allowTaint: true,
+		}).then(canvas => {
+			document.body.appendChild(canvas);
+
+			var a = document.createElement("a");
+			a.href = canvas.toDataURL("image/jpeg");
+			a.download = "banner.png";
+			a.click()
+		});
+	}
+
+</script>
+{% endblock %}

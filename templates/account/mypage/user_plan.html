@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+
+<section>
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <div class="avatar-xxl px-avatar-upload mb-3 mx-auto overflow-hidden">
+							<input type='file' id="px_image_Upload" accept=".png, .jpg, .jpeg" />
+							<label class="avatar-preview" for="px_image_Upload">
+								<span id="px_image_Preview" class="rounded-circle overflow-hidden avatar-preview-bg" style="background-image: url('{% if request.user.avater %} {{request.user.avater.url}} {% else %} {% static 'img/avatar-1.jpg' %} {% endif %}');">
+									</span>
+									<i class="bi bi-pencil icon-sm position-absolute bg-primary z-index-1 mb-2 bottom-0 end-0 text-white rounded-circle border border-2 border-white"></i>
+							</label>
+						</div>
+            <h5 class="my-3">{{request.user.nickname}}</h5>
+						
+						<ul class="list-group list-group-flush account-menu">
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserMessage' %}">받은 메시지</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserCampaign' %}">나의 캠페인</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserFavorite' %}">관심 캠페인</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserReview' %}">나의 리뷰</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserPoint' %}">나의 포인트</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center active">
+								<a href="{% url 'UserPlan' %}">나의 플랜</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserProfile' %}">개인정보 수정</a></p>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserDelete' %}">회원탈퇴</a>
+							</li>
+						</ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-9">
+        <div class="card mb-4">
+					<div class="card-header border-0">
+						<h4 class="m-1">나의 플랜</h4>
+					</div>
+					
+          <div class="card-body px-4">
+						{% if request.user.plan_type != 0 %}
+						<div class="row mb-5">
+              <div class="col-sm-6">
+								<div class="mb-3 mb-lg-0">
+									<h6 class="m-0 mb-3">이용중인 플랜</h6>
+									<span class="lead">
+										{% if request.user.plan_type == 1 %}
+										스타터
+										{% else %}
+										프리미엄
+										{% endif %}
+									</span>
+								</div>
+							</div>
+
+							<div class="col-sm-6">
+								<div class="mb-3 mb-lg-0">
+									<h6 class="m-0 mb-3">종료일자</h6>
+									<span class="lead">
+										{{request.user.plan_at|date:'Y년 m월 d일'}}
+									</span>
+								</div>
+							</div>
+						</div>
+
+						{% else %}
+
+						<div class="row gy-4">
+							<div class="col-md-6 my-3">
+								<div class="card card-shadow">
+										<div class="card-body ps-4 py-6">
+												<div class="icon icon-lg icon-warning-light rounded-circle mb-4">
+														<i class="fas fa-home"></i>
+												</div>
+												<h4>스타터</h4>
+												<p class="mb-4">상위노출 캠페인 등록, 블로그 진단 무료</p>
+												<h2 class="mb-4 text-black">49,900원<small class="text-muted">/월</small></h2>
+												<ul class="list-unstyled pb-3">
+													<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 기본 캠페인 무제한 등록</li>
+													<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 무제한 블로그 진단</li>
+													<li class="fw-bold py-1 opacity-5"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> <del>상위노출 캠페인 무제한 등록</del></li>
+													<li class="fw-bold py-1 opacity-5"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> <del>프리미엄 캠페인 무제한 등록</del></li>
+												</ul>
+												<a class="btn btn-lg w-100 btn-primary-soft" href="#" onclick="open_pay_modal('49,900','1');">구독하기</a>
+										</div>
+								</div>
+							</div>
+							<div class="col-md-6 my-3">
+								<div class="card card-shadow">
+										<div class="card-body ps-4 py-6">
+											<span class="position-absolute top-0 start-0 bg-post text-white px-3 fw-700 small rounded-3 mt-n2 ms-4">콘디의 추천!</span>
+												<div class="icon icon-lg icon-info-light rounded-circle mb-4">
+														<i class="fas fa-briefcase"></i>
+												</div>
+												<h4>프리미엄</h4>
+												<p class="mb-4">프리미엄 캠페인 등록, 블로그 진단 무료</p>
+												<h2 class="mb-4 text-black">99,900원<small class="text-muted">/월</small></h2>
+												<ul class="list-unstyled pb-3">
+													<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 기본 캠페인 무제한 등록</li>
+													<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 무제한 블로그 진단</li>
+													<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 상위노출 캠페인 무제한 등록</li>
+													<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 프리미엄 캠페인 무제한 등록</li>
+												</ul>
+												<a class="btn btn-lg w-100 btn-primary-soft" href="#" onclick="open_pay_modal('99,900','2');">구독하기</a>
+										</div>
+								</div>
+							</div>
+						</div>
+          </div>
+					{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="modal fade" data-bs-backdrop="static" id="planPayModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h4 class="mb-0 text-center">결제하기</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" id="closePlanPayModal" aria-label="Close"></button>
+      </div>
+			<div class="modal-body p-4">
+				<div class="row mb-5">
+					<div class="btn-group btn-group-sm w-100 mt-3">
+						<input type="radio" class="btn-check" name="pay_method" value="card" id="btnradio1">
+						<label class="btn btn-outline-primary w-50" for="btnradio1">신용카드</label>
+			
+						<input type="radio" class="btn-check" name="pay_method" value="trans" id="btnradio2">
+						<label class="btn btn-outline-primary w-50" for="btnradio2">실시간계좌이체</label>
+					</div>
+					<div class="btn-group btn-group-sm w-100  mt-1">
+						<input type="radio" class="btn-check" name="pay_method" value="vbank" id="btnradio3">
+						<label class="btn btn-outline-primary w-50" for="btnradio3">가상계좌</label>
+			
+						<input type="radio" class="btn-check" name="pay_method" value="phone" id="btnradio4">
+						<label class="btn btn-outline-primary w-50" for="btnradio4">휴대폰결제</label>
+					</div>
+			
+					<div class="btn-group btn-group-sm w-100  mt-1">
+						<input type="radio" class="btn-check" name="pay_method" value="kakaopay" id="btnradio5">
+						<label class="btn btn-outline-primary w-50" for="btnradio5">카카오페이</label>
+					</div>
+				</div>
+				
+			
+				<div class="row mb-2">
+					<div class="col-sm-4 d-flex justify-content-between align-items-start">
+						<p class="fw-bold">결제금액 :</p>
+					</div>
+					<div class="col-sm-8 d-flex flex-wrap justify-content-end align-items-center">
+						<p class="text-muted text-end lead"><strong id="pay_amount">0</strong>원</p>
+					</div>
+				</div>
+			
+				<button type="button" class="w-100 btn btn-primary mt-2" onclick="payment_submit();">결제하기</button>
+			</div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.1.js"></script>
+<script>
+	let plan_type = 0
+	function open_pay_modal(price,type){
+		plan_type = type;
+
+		document.getElementById("pay_amount").innerText = price;
+		var myModal = new bootstrap.Modal(document.getElementById("planPayModal"), {});
+		myModal.show();
+	}
+	
+
+	function payment_submit() {
+		const pay_amount = document.getElementById("pay_amount").innerText.replace(/[^0-9]/g, '');
+		console.log(plan_type);
+		let before_modal = "#planPayModal";
+		let pay_method = $('input[name=pay_method]:checked').val();
+		if (isEmpty(pay_method)){
+			openPopup('알림','결제수단을 선택해주세요.',before_modal);
+			return false;
+		}
+		$("#closePlanPayModal").click();
+
+		if (pay_method  == 'kakaopay') {
+			pg = "kakaopay";
+		} else {
+			//pg = "kcp";
+			pg = "uplus";
+		}
+
+
+		IMP.init('imp14216181');
+		IMP.request_pay({
+			pg : pg, // version 1.1.0부터 지원.
+			pay_method : pay_method,
+			merchant_uid : "{{merchant_uid}}",
+			name : "{{request.user}} 플랜 결제",
+			amount : pay_amount, //판매 가격
+			display: {
+				card_quota:["2","3"],
+			},
+			custom_data: {
+				referral: "plan",
+				use_point: 0,
+			},
+			buyer_name : "{{request.user.full_name}}",
+			buyer_tel : "{{request.user.phone_number}}",
+			buyer_email : "{{request.user.email}}",
+			m_redirect_url : "{{request.path}}",
+		}, function(rsp) {
+			if ( rsp.success ) {
+				$.ajax({
+					type : 'POST',
+					headers: { "X-CSRFToken": '{{csrf_token}}' },
+					url : "{{request.path}}",
+					data : {
+							imp_uid: rsp.imp_uid,
+							pay_method: pay_method,
+							merchant_uid: rsp.merchant_uid,
+							plan_type: plan_type,
+					},
+					dataType : 'json',
+					success: function(data){
+						if(data.result==200){
+							openPopup("알림", data.result_text, '', `reload`);
+						}else{
+							openPopup("알림", data.result_text, '', `reload`);
+						}
+						return;
+					},
+					error: function (request, status, error){
+						var msg = "ERROR : " + request.status + "<br>"
+						msg +=  + "내용 : " + request.responseText + "<br>" + error;
+						console.log(msg);
+					}
+				});
+			} else {
+				var msg = '결제에 실패하였습니다.';
+				msg += '에러내용 : ' + rsp.error_msg;
+				openPopup("알림", msg, '', 'reload');
+			}
+		});
+	}
+</script>
+{% endblock %}

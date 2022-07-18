@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+
+
+<section class="section">
+	<div class="container">
+			<div class="row justify-content-center section-heading">
+					<div class="col-lg-8 col-xl-7 text-center">
+							<h1 class="mb-2 opacity-9">구독형 결제 안내</h1>
+							<p class="mx-lg-8">캠페인 등록, 블로그 진단 무료</p>
+					</div>
+			</div>
+			<div class="row">
+					<div class="col-md-6 my-3">
+							<div class="card card-shadow">
+									<div class="card-body ps-4 py-6">
+											<div class="icon icon-lg icon-warning-light rounded-circle mb-4">
+													<i class="fas fa-home"></i>
+											</div>
+											<h4>스타터</h4>
+											<p class="mb-4">상위노출 캠페인 등록, 블로그 진단 무료</p>
+											<h2 class="mb-4 text-black">49,900원<small class="text-muted">/월</small></h2>
+											<ul class="list-unstyled pb-3">
+												<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 기본 캠페인 무제한 등록</li>
+												<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 무제한 블로그 진단</li>
+												<li class="fw-bold py-1 opacity-5"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> <del>상위노출 캠페인 무제한 등록</del></li>
+												<li class="fw-bold py-1 opacity-5"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> <del>프리미엄 캠페인 무제한 등록</del></li>
+											</ul>
+											<a class="btn btn-lg w-100 btn-primary-soft" href="{% url 'UserPlan' %}">구독하기</a>
+									</div>
+							</div>
+					</div>
+					<div class="col-md-6 my-3">
+							<div class="card card-shadow">
+									<span class="position-absolute top-0 start-0 bg-post text-white px-3 fw-700 small rounded-3 mt-n2 ms-4">콘디의 추천!</span>
+									<div class="card-body ps-4 py-6">
+											<div class="icon icon-lg icon-info-light rounded-circle mb-4">
+													<i class="fas fa-briefcase"></i>
+											</div>
+											<h4>프리미엄</h4>
+											<p class="mb-4">프리미엄 캠페인 등록, 블로그 진단 무료</p>
+											<h2 class="mb-4 text-black">99,900원<small class="text-muted">/월</small></h2>
+											<ul class="list-unstyled pb-3">
+												<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 기본 캠페인 무제한 등록</li>
+												<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 무제한 블로그 진단</li>
+												<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 상위노출 캠페인 무제한 등록</li>
+												<li class="fw-bold py-1"><span class="icon icon-xs icon-primary-light rounded-circle me-2"><i class="fas fa-check"></i></span> 프리미엄 캠페인 무제한 등록</li>
+											</ul>
+											<a class="btn btn-lg w-100 btn-primary-soft" href="{% url 'UserPlan' %}">구독하기</a>
+									</div>
+							</div>
+					</div>
+			</div>
+	</div>
+</section>
+<!-- End section -->
+<!-- section -->
+<section class="section bg-gray-100">
+	<div class="container">
+			<div class="row justify-content-center section-heading">
+					<div class="col-lg-8 col-xl-7 text-center">
+						<h1 class="mb-2 opacity-9">건별 결제 안내</h1>
+						<p class="mx-lg-8">캠페인 등록, 블로그 진단 건당 결제</p>
+					</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="card mb-3">
+						<div class="card-body d-flex justify-content-between p-5">
+							<h5 class="fw-500 m-0 opacity-9">
+								캠페인 등록
+							</h5>
+							<h4 class="m-0">5,000원<small class="text-muted">/인</small></h4>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6">
+					<div class="card mb-3">
+						<div class="card-body d-flex justify-content-between p-5">
+							<h5 class="fw-500 m-0 opacity-9">
+								블로그진단
+							</h5>
+							<h4 class="m-0">부분무료<small class="text-muted">/회</small></h4>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+</section>
+<!-- End section -->
+<!-- Section -->
+<section class="section">
+	<div class="container">
+			<div class="row justify-content-center section-heading">
+					<div class="col-lg-8 col-xl-7 text-center">
+							<h1 class="opacity-9">자주 묻는 질문 및 답변</h1>
+					</div>
+			</div>
+			<div class="row justify-content-center">
+					<div class="col-lg-9">
+							<div class="accordion accordion-flush shadow">
+									<div class="accordion-item">
+											<h2 class="accordion-header" id="heading_01_1">
+													<button class="py-4 accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_01_1" aria-expanded="true" aria-controls="collapse_01_1">
+														구독형 결제와 건별 결제의 차이점은 무엇인가요?
+													</button>
+											</h2>
+											<div id="collapse_01_1" class="accordion-collapse collapse show" aria-labelledby="heading_01_1" data-bs-parent="#accordionExample_02">
+													<div class="accordion-body">
+														구독형은 월 구독료 결제 시, 콘텐츠를 무제한으로 생산할 수 있는 플랜이예요.<br>
+														- [구독 관리]에서 구독할 플랜을 결제한 뒤, 무제한으로 캠페인을 등록해 보세요.<br><br>
+														
+														건별은 콘텐츠 한 건당 5,000원의 이용 수수료가 발생하며 소수로 진행하실 때 적합한 플랜이예요.<br>
+														- [포인트 충전]을 통해 선 충전 후 포인트 결제 또는 캠페인 등록 에서 결제하여 이용이 가능해요
+													</div>
+											</div>
+									</div>
+									<div class="accordion-item">
+											<h2 class="accordion-header" id="heading_01_2">
+													<button class="py-4 accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_01_2" aria-expanded="false" aria-controls="collapse_01_2">
+														건별 이용 요금은 어떻게 결제하나요?
+													</button>
+											</h2>
+											<div id="collapse_01_2" class="accordion-collapse collapse" aria-labelledby="heading_01_2" data-bs-parent="#accordionExample_02">
+													<div class="accordion-body">
+														로그인/회원가입하신 뒤 [캠페인 등록] 마지막 단계에서 신용카드, 가상계좌, 실시간 계좌이체 등으로 결제할 수 있어요.<br>
+														또는 [포인트 충전]을 통해 선결제 후 프로젝트 등록 마지막 단계에서 포인트 차감하여 진행할 수 있어요.
+													</div>
+											</div>
+									</div>
+									<div class="accordion-item">
+											<h2 class="accordion-header" id="heading_01_3">
+													<button class="py-4 accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_01_3" aria-expanded="false" aria-controls="collapse_01_3">
+														리뷰어 모집 1인당 5,000원 수수료인가요?
+													</button>
+											</h2>
+											<div id="collapse_01_3" class="accordion-collapse collapse" aria-labelledby="heading_01_3" data-bs-parent="#accordionExample_02">
+													<div class="accordion-body">
+														맞습니다! 직접 설정하신 모집인원 수 * 5,000원의 수수료가 발생해요.
+													</div>
+											</div>
+									</div>
+							</div>
+					</div>
+			</div>
+	</div>
+</section>
+<!-- End Section -->
+<!-- Section -->
+<section class="section bg-gray-100">
+	<div class="container">
+		<div class="row justify-content-center section-heading">
+			<div class="col-lg-8 col-xl-7 text-center">
+					<h1 class="opacity-9">도움이 필요하신가요?</h1>
+					<div class="lead">1:1 문의를 통해 상세하게 답변 드리겠습니다.</div>
+					<div class="pt-2">
+						<a class="btn btn-primary me-3" href="{% url 'CampaignWrite' %}">체험단 모집하기</a>
+						<a class="btn btn-primary-soft" href="{% url 'QnaList' %}">문의하기</a>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</section>
+<!-- End section -->
+
+{% endblock %}

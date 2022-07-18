@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+
+<section class="section">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-12">
+				<form name="faqForm">
+					{% csrf_token %}
+					<textarea class="form-control" id="summernote" name="faq"></textarea>
+					<button type="button" class="w-100 btn btn-primary mt-2" onclick="faq_submit();">작성완료</button>
+				</form>
+				<div id="faq-content">{{faq.content|safe|linebreaks}}</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+
+<link href="{% static 'vendor/summernote/css/summernote-lite.css' %}" rel="stylesheet">
+<script src="{% static 'vendor/summernote/js/summernote-lite.js' %}"></script>
+<script src="{% static 'vendor/summernote/js/lang/summernote-ko-KR.js' %}"></script>
+<script>
+	let faq_content = document.getElementById("faq-content");
+	$(document).ready(function() {
+		$('#summernote').summernote({
+			width: '100%',
+			height: 400,
+			minHeight: 400,
+			maxHeight: 400,
+			fontNames: ["Noto Sans KR","Helvetica Neue"],
+			lang: 'ko-KR',
+			toolbar: [
+				['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+				['insert',['picture','video']],
+			],
+			fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72']
+		});
+		$("#summernote").summernote('insertNode', faq_content);
+	});
+
+	
+	function faq_submit() {
+		
+    var faqForm = document.faqForm;
+    var faq = faqForm.faq.value;
+
+		
+    var queryString = $("form[name=faqForm]").serialize();
+ 
+    $.ajax({
+        type : 'POST',
+        url : "{{request.path}}",
+        data : queryString,
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+            openPopup("알림", data.result_text,'','reload');
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+
+</script>
+
+{% endblock %}

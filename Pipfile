@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+pymysql = "*"
+pillow = "*"
+django-imagekit = "*"
+pilkit = "*"
+numpy = "*"
+requests = "*"
+iamport-rest-client = "*"
+uwsgi = "*"
+bs4 = "*"
+lxml = "*"
+cryptography = "*"
+django-cors-headers = "*"
+xlwt = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"

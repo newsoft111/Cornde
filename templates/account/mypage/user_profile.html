@@ -1,0 +1,682 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+
+<section>
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <div class="avatar-xxl px-avatar-upload mb-3 mx-auto overflow-hidden">
+							<input type='file' id="px_image_Upload" accept=".png, .jpg, .jpeg" />
+							<label class="avatar-preview" for="px_image_Upload">
+								<span id="px_image_Preview" class="rounded-circle overflow-hidden avatar-preview-bg" style="background-image: url('{% if request.user.avater %} {{request.user.avater.url}} {% else %} {% static 'img/avatar-1.jpg' %} {% endif %}');">
+									</span>
+									<i class="bi bi-pencil icon-sm position-absolute bg-primary z-index-1 mb-2 bottom-0 end-0 text-white rounded-circle border border-2 border-white"></i>
+							</label>
+						</div>
+            <h5 class="my-3">{{request.user.nickname}}</h5>
+						
+						<ul class="list-group list-group-flush account-menu">
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserMessage' %}">받은 메시지</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserCampaign' %}">나의 캠페인</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserFavorite' %}">관심 캠페인</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserReview' %}">나의 리뷰</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserPoint' %}">나의 포인트</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserPlan' %}">나의 플랜</a>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center active">
+								<a href="{% url 'UserProfile' %}">개인정보 수정</a></p>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<a href="{% url 'UserDelete' %}">회원탈퇴</a>
+							</li>
+						</ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-9">
+        <div class="card mb-4">
+					<div class="card-header border-0">
+						<h4 class="m-1">계정 정보</h4>
+					</div>
+          <div class="card-body px-4">
+            <div class="row mb-3">
+              <div class="col-sm-3 d-flex justify-content-between align-items-center">
+                <p class="mb-0">이메일</p>
+              </div>
+              <div class="col-sm-9 d-flex justify-content-between align-items-center">
+								<p class="text-muted mb-0">{{request.user.email}}</p>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-3 d-flex justify-content-between align-items-center">
+                <p class="mb-0">닉네임</p>
+              </div>
+              <div class="col-sm-9 d-flex justify-content-between align-items-center">
+								<p class="text-muted mb-0">{{request.user.nickname}}</p>
+              </div>
+            </div>
+						<form name="changeProfileForm">
+							{% csrf_token %}
+							<div class="row mb-3">
+								<div class="col-sm-3 d-flex justify-content-between align-items-center">
+									<p class="mb-0">이름</p>
+								</div>
+								<div class="col-sm-9 d-flex justify-content-between align-items-center">
+									<input type="text" name="full_name" value="{{request.user.full_name}}" class="form-control" >
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-sm-3 d-flex justify-content-between align-items-center">
+									<p class="mb-0">출생년도</p>
+								</div>
+								<div class="col-sm-9 d-flex justify-content-between align-items-center">
+									<select class="form-select" name="birth_year">
+										<option value="" selected>출생년도를 선택해주세요.</option>
+									</select>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-sm-3 d-flex justify-content-between align-items-start">
+									<p class="mt-2">전화번호</p>
+								</div>
+								<div class="col-sm-9 justify-content-between align-items-center">
+									<div class="input-group">
+										<input type="text" name="phone_number" readonly value="{{request.user.phone_number}}" class="form-control" >
+										<a href="#" onclick="update_phone_number_btn(this);" class="btn btn-outline-primary">수정하기</a>
+										<a href="#" onclick="sms_code_send();" class="btn btn-outline-primary d-none">인증번호받기</a>
+									</div>
+									<div class="input-group mt-2 d-none" id="sms-code-check">
+										<input type="text" name="auth_code" class="form-control" >
+										<a href="#" onclick="sms_code_check();" class="btn btn-primary">인증확인</a>
+									</div>
+								</div>
+							</div>
+						</form>
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <p class="mb-0">배송지</p>
+              </div>
+              <div class="col-sm-9">
+                <table class="table">
+									<thead>
+										<tr>
+											<th scope="col">배송지</th>
+											<th scope="col">받는이</th>
+											<th scope="col">주소/연락처</th>
+											<th scope="col">삭제</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for shippingAddressLsit in shipping_address_lsit %}
+										<tr>
+											<th scope="row">
+												{{shippingAddressLsit.address_name}}
+												{% if shippingAddressLsit.is_default %}
+												<p class="fs-6 fw-normal">[기본배송지]</p>
+												{% endif %}
+											</th>
+											<td>{{shippingAddressLsit.receiver}}</td>
+											<td>
+												{{shippingAddressLsit.zipcode}})<br>
+												{{shippingAddressLsit.base_address}}<br>
+												{{shippingAddressLsit.detail_address}}<br>
+												{{shippingAddressLsit.phone_number}}
+											</td>
+											<td>
+												<button type="button" class="btn btn-sm btn-primary" data-address-id="{{shippingAddressLsit.id}}" onclick="open_del_shipping_address_modal(this)">삭제</button>
+											</td>
+										</tr>
+										{% endfor %}
+										<tr>
+											<td class="text-center" colspan="4">
+												<a href="#" data-bs-toggle="modal" data-bs-target="#addShippingAddressModal">배송지 추가</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+              </div>
+            </div>
+						<div class="row">
+							<div class="col-12 text-end">
+								<a href="#" class="btn btn-primary" onclick="change_profile_submit();">변경하기</a>
+							</div>
+						</div>
+          </div>
+        </div>
+
+
+
+				<div class="card mb-4">
+					<div class="card-header border-0">
+						<h4 class="m-1">비밀번호 변경</h4>
+					</div>
+          <div class="card-body px-4">
+						<form name="changePwForm">
+							{% csrf_token %}
+							<div class="row mb-3">
+								<div class="col-sm-3 d-flex justify-content-between align-items-center">
+									<p class="mb-0">현재 비밀번호</p>
+								</div>
+								<div class="col-sm-9 d-flex justify-content-between align-items-center">
+									<input type="password" name="current_password" class="form-control" placeholder="현재 비밀번호를 입력해 주세요.">
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<div class="col-sm-3 d-flex justify-content-between align-items-center">
+									<p class="mb-0">변경할 비밀번호</p>
+								</div>
+								<div class="col-sm-9 d-flex justify-content-between align-items-center">
+									<input type="password" name="password" class="form-control" placeholder="변경할 비밀번호를 입력해 주세요. (6자리 이상)">
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<div class="col-sm-3 d-flex justify-content-between align-items-center">
+									<p class="mb-0">비밀번호 확인</p>
+								</div>
+								<div class="col-sm-9 d-flex justify-content-between align-items-center">
+									<input type="password" name="password2" class="form-control mt-1" placeholder="비밀번호를 한번 더 입력해주세요.">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12 text-end">
+									<a href="#" class="btn btn-primary" onclick="change_pw_submit();">변경하기</a>
+								</div>
+							</div>
+						</form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="modal fade" data-bs-backdrop="static" id="delShippingAddressModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h4 class="mb-0 text-center">알림</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+			<form name="delShippingAddressForm">
+				{% csrf_token %}
+				<input type="hidden" name="address_id" value="">
+				<div class="modal-body p-4">
+					정말로 삭제하시겠습니까?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-primary ms-1" onclick="del_shipping_address_submit()">삭제</button>
+					<button type="button" class="btn btn-primary btn-md" data-bs-dismiss="modal">취소</button>
+				</div>
+			</form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="addShippingAddressModal" data-bs-backdrop="static" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header p-4">
+        <h4 class="mb-0 text-center">배송지추가</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+			<form name="addShippingAddressForm">
+				{% csrf_token %}
+				<div class="modal-body p-4">
+					<div class="row mb-3">
+						<div class="col-sm-3 d-flex justify-content-between align-items-center">
+							<p class="mb-0">배송지명</p>
+						</div>
+						<div class="col-sm-9 d-flex justify-content-between align-items-center">
+							<input type="text" class="form-control" name="address_name" placeholder="배송지명을 입력해 주세요.">
+						</div>
+					</div>
+
+					<div class="row mb-3">
+						<div class="col-sm-3 d-flex justify-content-between align-items-center">
+							<p class="mb-0">수령인</p>
+						</div>
+						<div class="col-sm-9 d-flex justify-content-between align-items-center">
+							<input type="text" class="form-control" name="receiver" placeholder="수령인을 입력해 주세요.">
+						</div>
+					</div>
+
+
+					<div class="row mb-3">
+						<div class="col-sm-3 d-flex justify-content-between align-items-top">
+							<p class="mb-0">주소</p>
+						</div>
+						<div class="col-sm-9 justify-content-between align-items-center">
+							<div class="input-group">
+								<input type="text" class="form-control" id="zipCode" name="zipcode" readonly>
+								<a href="#" onclick="find_address();" class="btn btn-outline-primary">우편번호 찾기</a>
+							</div>
+							<div id="addressAPI">
+							</div>
+							<input type="text" class="form-control" id="baseAddress" name="base_address" readonly>
+							<input type="text" class="form-control" id="detailAddress" name="detail_address" placeholder="상세주소를 입력해 주세요.">
+						</div>
+					</div>	
+
+					<div class="row mb-3">
+						<div class="col-sm-3 d-flex justify-content-between align-items-center">
+							<p class="mb-0">연락처</p>
+						</div>
+						<div class="col-sm-9 d-flex justify-content-between align-items-center">
+							<input type="text" class="form-control" name="phone_number" maxlength="11" placeholder="연락처를 입력해 주세요.">
+						</div>
+					</div>
+
+					<div class="row mb-3">
+						<div class="col-sm-3 d-flex justify-content-between align-items-center">
+							<p class="mb-0">기본 배송지</p>
+						</div>
+						<div class="col-sm-9 d-flex justify-content-between align-items-center">
+							<div>
+								<input class="form-check-input" type="checkbox" name="is_default" value="1" id="flexCheckDefault">
+								<label class="form-check-label" for="flexCheckDefault">
+									기본 배송지로 설정
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-primary ms-1" data-bs-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary btn-md" onclick="add_shipping_address_submit()" data-bs-dismiss="modal">확인</button>
+				</div>
+			</form>
+    </div>
+  </div>
+</div>
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+	function update_phone_number_btn(e){
+		$(e).addClass("d-none");
+		$("input[name=phone_number]:first").attr("readonly", false);
+		$(e).next().removeClass("d-none");
+	}
+
+	function sms_code_send(){
+    var phone_number = $("input[name=phone_number]:first").val();
+       
+    var queryString = {
+		  phone_number: phone_number,
+			csrfmiddlewaretoken: '{{ csrf_token }}'
+	  };
+    if (isEmpty(phone_number)) {
+      openPopup('알림','전화번호를 입력해주세요.');
+      return false;
+    }
+		if (!/^\d+$/.test(phone_number)) {
+			openPopup('알림','전화번호는 숫자만 가능합니다.');
+			return false;
+		}
+
+    $.ajax({
+        type : 'POST',
+        url : "{% url 'SmsCodeSend' %}",
+        data : queryString,
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+            openPopup("알림", data.result_text);
+						$("#sms-code-check").removeClass("d-none");
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+	}
+
+	function sms_code_check() {
+    var phone_number = $("input[name=phone_number]:first").val();
+    var auth_code = $("input[name=auth_code]").val();
+   
+    var queryString = {
+		  phone_number: phone_number,
+      auth_code: auth_code,
+			csrfmiddlewaretoken: '{{ csrf_token }}'
+	  };
+    
+		if (isEmpty(auth_code)) {
+      openPopup('알림','인증번호를 입력해주세요.');
+      return false;
+    }
+		if (auth_code.toString().length != '6') {
+      openPopup('알림','인증번호는 6자리 입니다.');
+      return false;
+    }
+		if (!/^\d+$/.test(auth_code)) {
+			openPopup('알림','인증번호는 숫자만 가능합니다.');
+			return false;
+		}
+
+    $.ajax({
+        type : 'POST',
+        url : "{% url 'SmsCodeCheck' %}",
+        data : queryString,
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+            openPopup("알림", data.result_text);
+						$("input[name=phone_number]:first").attr("readonly", true);
+						$("input[name=auth_code]").attr("readonly", true);
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+	}
+
+	$(document).ready(function(){ 
+		let dateDropdown = document.getElementsByName('birth_year')[0]; 
+
+		let currentYear = new Date().getFullYear();    
+		let earliestYear = 1940;     
+		while (currentYear >= earliestYear) {      
+			let dateOption = document.createElement('option');          
+			dateOption.text = currentYear;      
+			dateOption.value = currentYear;        
+			dateDropdown.add(dateOption);      
+			currentYear -= 1;    
+		}
+
+		if ("{{request.user.birth_year}}" != "None"){
+			$('select[name=birth_year]').val('{{request.user.birth_year}}').prop("selected",true);
+		}
+	});
+	
+
+	function open_del_shipping_address_modal(e){
+		var Modal = new bootstrap.Modal(document.getElementById('delShippingAddressModal'));
+		$('input[type="hidden"][name="address_id"]').val($(e).attr("data-address-id"));
+		Modal.show();
+	}
+
+	$("input[name='receiver']").on('input', function (event) { 
+		this.value = this.value.replace(/[^(ㄱ-힣a-zA-Z)]/gi, '');
+	});
+
+	$("input[name='phone_number']").on('input', function (event) { 
+		this.value = this.value.replace(/[^0-9]/g, '');
+	});
+	$("input[name='auth_code']").on('input', function (event) { 
+		this.value = this.value.replace(/[^0-9]/g, '');
+	});
+
+	
+	// 우편번호 찾기 찾기 화면을 넣을 element
+	var find_addr_wrap = document.getElementById('addressAPI');
+
+	function foldDaumPostcode() {
+			// iframe을 넣은 element를 안보이게 한다.
+			find_addr_wrap.style.display = 'none';
+			find_addr_wrap.classList.remove('border');
+	}
+
+	function find_address() {
+			find_addr_wrap.classList.add('border');
+			// 현재 scroll 위치를 저장해놓는다.
+			var currentScroll = Math.max(document.body.scrollTop, document.documentElement.scrollTop);
+			new daum.Postcode({
+					oncomplete: function(data) {
+							// 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+							// 각 주소의 노출 규칙에 따라 주소를 조합한다.
+							// 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+							var addr = ''; // 주소 변수
+							var extraAddr = ''; // 참고항목 변수
+
+							//사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+							if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+									addr = data.roadAddress;
+							} else { // 사용자가 지번 주소를 선택했을 경우(J)
+									addr = data.jibunAddress;
+							}
+
+							// 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+							if(data.userSelectedType === 'R'){
+									// 법정동명이 있을 경우 추가한다. (법정리는 제외)
+									// 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+									if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+											extraAddr += data.bname;
+									}
+									// 건물명이 있고, 공동주택일 경우 추가한다.
+									if(data.buildingName !== '' && data.apartment === 'Y'){
+											extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+									}
+									// 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+									if(extraAddr !== ''){
+											extraAddr = ' (' + extraAddr + ')';
+									}
+									// 조합된 참고항목을 해당 필드에 넣는다.
+							}
+
+							// 우편번호와 주소 정보를 해당 필드에 넣는다.
+							document.getElementById('zipCode').value = data.zonecode;
+							document.getElementById("baseAddress").value = addr;
+							// 커서를 상세주소 필드로 이동한다.
+							document.getElementById("detailAddress").focus();
+
+							// iframe을 넣은 element를 안보이게 한다.
+							// (autoClose:false 기능을 이용한다면, 아래 코드를 제거해야 화면에서 사라지지 않는다.)
+							find_addr_wrap.style.display = 'none';
+
+							// 우편번호 찾기 화면이 보이기 이전으로 scroll 위치를 되돌린다.
+							document.body.scrollTop = currentScroll;
+					},
+					// 우편번호 찾기 화면 크기가 조정되었을때 실행할 코드를 작성하는 부분. iframe을 넣은 element의 높이값을 조정한다.
+					onresize : function(size) {
+						find_addr_wrap.style.height = size.height+'px';
+					},
+					width : '100%',
+					height : '100%'
+			}).embed(find_addr_wrap);
+
+			// iframe을 넣은 element를 보이게 한다.
+			find_addr_wrap.style.display = 'block';
+	}
+	
+	function change_pw_submit() {
+		
+    var changePwForm = document.changePwForm;
+    var current_password = changePwForm.current_password.value;
+    var password = changePwForm.password.value;
+		var password2 = changePwForm.password2.value;
+    
+		if (isEmpty(current_password)) {
+			openPopup('알림','현재 비밀번호를 입력해주세요.');
+			return false;
+		}
+    if (isEmpty(password)) {
+			openPopup('알림','변경하실 비밀번호를 입력해주세요.');
+			return false;
+		}
+		if (!/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{6,20}$/.test(password)) {
+			openPopup('알림','비밀번호는 6~20자 영문, 숫자 조합이여야 합니다.');
+			return false;
+		}
+		if (isEmpty(password2)) {
+			openPopup('알림','비밀번호를 한번더 입력해주세요.');
+			return false;
+		}
+		if (password != password2) {
+			openPopup('알림','비밀번호가 일치하지 않습니다.');
+			return false;
+		}
+		
+    var queryString = $("form[name=changePwForm]").serialize();
+		
+    $.ajax({
+        type : 'POST',
+        url : "{% url 'ChangePasswd' %}",
+        data : queryString,
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+						openPopup("알림", data.result_text,'',"location.replace('{% url 'UserLogin' %}')");
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+
+
+	function add_shipping_address_submit() {
+		
+    var addShippingAddressForm = document.addShippingAddressForm;
+    var address_name = addShippingAddressForm.address_name.value;
+    var receiver = addShippingAddressForm.receiver.value;
+		var zipcode = addShippingAddressForm.zipcode.value;
+		var base_address = addShippingAddressForm.base_address.value;
+		var detail_address = addShippingAddressForm.detail_address.value;
+		var phone_number = addShippingAddressForm.phone_number.value;
+    
+		var this_modal_id = '#addShippingAddressModal';
+
+		if (isEmpty(address_name)) {
+			openPopup('알림','배송지명을 입력해주세요.',this_modal_id);
+			return false;
+		}
+    if (isEmpty(receiver)) {
+			openPopup('알림','수령인을 입력해주세요.',this_modal_id);
+			return false;
+		}
+		if (isEmpty(zipcode) || isEmpty(base_address)) {
+			openPopup('알림','우편번호 찾기를 해주세요.',this_modal_id);
+			return false;
+		}
+		if (isEmpty(detail_address)) {
+			openPopup('알림','상세주소를 입력해주세요.',this_modal_id);
+			return false;
+		}
+		if (isEmpty(phone_number)) {
+			openPopup('알림','연락처를 입력해주세요.',this_modal_id);
+			return false;
+		}
+		
+    var queryString = $("form[name=addShippingAddressForm]").serialize();
+		
+    $.ajax({
+        type : 'POST',
+        url : "{% url 'AddShippingAddress' %}",
+        data : queryString,
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+						openPopup("알림", data.result_text,'',"reload");
+          }else{
+            openPopup("알림", data.result_text,this_modal_id);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+
+
+
+	function del_shipping_address_submit(e) {
+	  var queryString = $("form[name=delShippingAddressForm]").serialize();
+		
+    $.ajax({
+        type : 'POST',
+        url : "{% url 'DelShippingAddress' %}",
+        data : queryString,
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+						openPopup("알림", data.result_text,'',"reload");
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+
+	function change_profile_submit() {
+		
+    var changeProfileForm = document.changeProfileForm;
+    var full_name = changeProfileForm.full_name.value;
+		var birth_year = changeProfileForm.birth_year.value;
+    
+		if (isEmpty(full_name) && !/^[가-힣|a-z|A-Z|]{2,10}$/.test(full_name)) {
+			openPopup('알림','이름은 숫자/영문만 가능합니다.');
+			return false;
+		}
+		
+    var queryString = $("form[name=changeProfileForm]").serialize();
+		
+    $.ajax({
+        type : 'POST',
+        url : "{{request.path}}",
+        data : queryString,
+        dataType : 'json',
+        success: function(data){
+          if(data.result==200){
+						openPopup("알림", data.result_text,'',"reload");
+          }else{
+            openPopup("알림", data.result_text);
+          }
+          return;
+        },
+        error: function (request, status, error){
+          var msg = "ERROR : " + request.status + "<br>"
+			    msg +=  + "내용 : " + request.responseText + "<br>" + error;
+			    console.log(msg);
+        }
+    });
+  }
+
+
+</script>
+{% endblock %}

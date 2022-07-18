@@ -1,0 +1,40 @@
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+@include media-breakpoint-up(md) {
+	.md-img-140 {
+    	max-width: 140%;
+    }
+    .md-img-120 {
+    	max-width: 120%;
+    }
+
+}
+
+@include media-breakpoint-up(lg) {
+    .lg-img-140 {
+    	max-width: 140%;
+    }
+    .lg-img-120 {
+    	max-width: 120%;
+    }
+    .lg-img-110 {
+        max-width: 110%;
+    }
+}
+
+.object-fit {
+    object-fit: cover;
+}
+
+.mw-auto {
+    max-width: inherit;
+}
+
+.grayscale {
+     filter: gray;
+  -webkit-filter: grayscale(1);
+  filter: grayscale(1);
+}

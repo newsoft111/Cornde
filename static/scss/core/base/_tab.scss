@@ -1,0 +1,40 @@
+.tab-style-01 {
+	.nav-tabs {
+		border-bottom: 1px solid var(--px-gray-300);
+		.nav-item {
+			+ .nav-item {
+				padding-left: 35px;
+			}
+		}
+		.nav-link {
+			padding: 0 0 5px;
+			border: none;
+			border-radius: 0;
+			background: none;
+			color: var(--px-text-mode);
+			font-weight: 400;
+			position: relative;
+			font-size: 1rem;;
+			&:after {
+				content: "";
+				position: absolute;
+				bottom: -1px;
+				width: 0;
+				height: 3px;
+				left: auto;
+				right: 0;
+				transition: ease all 0.35s;
+				background: currentColor;
+			}
+			&:hover,
+			&.active {
+				color: $primary;
+				&:after {
+					width: 100%;
+					right: auto;
+					left: 0;
+				}
+			}
+		}
+	}
+}

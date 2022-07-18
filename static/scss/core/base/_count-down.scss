@@ -1,0 +1,47 @@
+.count-down-01 {
+	display: flex;
+	font-size: 14px;
+    line-height: normal;
+	> div {
+		text-align: center;
+	}
+	.count {
+	    font-size: 14px;
+	    color: $white;
+	    display: inline-block;
+	    vertical-align: top;
+	    font-weight: 700;
+	    width: 100%;
+	    margin: 0;
+	}
+	.title  {
+		font-size: 10px;
+		color: $white;
+	}
+}
+
+.count-down-02 {
+	display: flex;
+	font-size: 18px;
+    line-height: normal;
+	> div {
+		text-align: center;
+		border: 1px solid var(--px-gray-100);
+		margin: 0 10px;
+		border-radius: $border-radius;
+		padding: 10px 5px;
+	}
+	.count {
+	    font-size: 18px;
+	    color: $white;
+	    display: inline-block;
+	    vertical-align: top;
+	    font-weight: 700;
+	    width: 100%;
+	    margin: 0;
+	}
+	.title  {
+		font-size: 15px;
+		color: $body-color;
+	}
+}
