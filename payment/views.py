@@ -14,8 +14,8 @@ from datetime import datetime, timedelta
 # Create your views here.
 
 iamport = Iamport(
-	imp_key='9233357849957397', 
-	imp_secret='qh88zbQvsbOONwGcvCNfWJX7dbfPn70Np9WYkMtNYiCLPiYlVLASvyZJKfz7nzVMIRL3EfQCysonLmIG'
+	imp_key='', 
+	imp_secret=''
 )
 
 
