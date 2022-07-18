@@ -24,18 +24,18 @@ def EmailSender(email, subject, message, mailType):
 
 def SmsSender(phone_number,type, content):
 	if phone_number is not None:
-		url = 'https://api-sens.ncloud.com/v1/sms/services/ncp:sms:kr:281528719644:cornde/messages/'
+		url = 'https://api-sens.ncloud.com/v1/sms/services/ncp:sms:kr::/messages/'
 		headers = {
 				'Content-Type': 'application/json; charset=utf-8',
-				'x-ncp-auth-key': 'dSvL0zD8jM4nuYPSfc7R',
-				'x-ncp-service-secret':'6c20fd55e7294869844b3ba66784945d',
+				'x-ncp-auth-key': '',
+				'x-ncp-service-secret':'',
 		}
 
 		data = {
 				'type':type,
 				'contentType':'COMM',
 				'countryCode':'82',
-				'from':'01021129997',
+				'from':'',
 				'to':[
 						f'{phone_number}',
 				],
